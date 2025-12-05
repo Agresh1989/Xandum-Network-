@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Xandeum Network Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              xand: {
+                50: '#f0f9ff',
+                100: '#e0f2fe',
+                500: '#0ea5e9', // Sky blue-ish
+                600: '#0284c7',
+                900: '#0c4a6e',
+                950: '#082f49',
+              },
+              // Dark palette reserved for specific high-contrast elements if needed, 
+              // but mostly replaced by Slate/White in the UI.
+              dark: {
+                800: '#1e293b',
+                900: '#0f172a',
+                950: '#020617',
+              }
+            }
+          }
+        },
+        darkMode: 'class',
+      }
+    </script>
+    <style>
+      /* Custom scrollbar for light theme */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f8fafc;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 3px;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^6.22.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "recharts": "https://aistudiocdn.com/recharts@^2.12.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-50 text-slate-900 antialiased selection:bg-xand-500 selection:text-white">
+    <div id="root"></div>
+  </body>
+</html>

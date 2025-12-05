@@ -1,0 +1,5 @@
+{
+  "name": "Xandeum Network Analytics",
+  "description": "A comprehensive analytics dashboard for Xandeum pNodes, featuring real-time network statistics, validator performance metrics, and AI-driven network analysis.",
+  "requestFramePermissions": []
+}
