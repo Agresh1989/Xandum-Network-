@@ -15,5 +15,6 @@ export const ICONS = {
   External: <i className="fas fa-external-link-alt"></i>,
   Report: <i className="fas fa-file-alt"></i>,
   Home: <i className="fas fa-home"></i>,
-  Back: <i className="fas fa-arrow-left"></i>
+  Back: <i className="fas fa-arrow-left"></i>,
+  Leaderboard: <i className="fas fa-trophy"></i>
 };

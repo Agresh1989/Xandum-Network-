@@ -11,6 +11,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: ICONS.Dashboard },
+    { name: 'Leaderboard', path: '/leaderboard', icon: ICONS.Leaderboard },
     { name: 'Validators', path: '/validators', icon: ICONS.Nodes },
     { name: 'Simulation', path: '/simulation', icon: ICONS.Warning },
     { name: 'Reports', path: '/reports', icon: ICONS.Report },

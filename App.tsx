@@ -9,6 +9,7 @@ import { Simulation } from './pages/Simulation';
 import { Reports } from './pages/Reports';
 import { ChatBot } from './components/ChatBot';
 import { Home } from './pages/Home';
+import { Leaderboard } from './pages/Leaderboard';
 
 // Layout Wrapper to handle Sidebar logic conditionally
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -66,6 +67,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/validators" element={<Navigate to="/dashboard" replace />} />
           <Route path="/node/:id" element={<NodeDetail />} />
           <Route path="/simulation" element={<Simulation />} />
