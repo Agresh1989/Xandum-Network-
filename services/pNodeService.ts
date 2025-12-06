@@ -11,8 +11,9 @@ import { GoogleGenAI } from "@google/genai";
  * Now includes WebSocket/Simulation support for Real-Time updates.
  */
 
-let RPC_ENDPOINT = localStorage.getItem('xandeum_rpc_endpoint') || process.env.REACT_APP_RPC_ENDPOINT || 'https://rpc.xandeum.network';
-const DEFAULT_TIMEOUT = 5000;
+let RPC_ENDPOINT = localStorage.getItem('xandeum_rpc_endpoint') || (typeof process !== 'undefined' ? process.env.REACT_APP_RPC_ENDPOINT : undefined) || 'https://rpc.xandeum.network';
+// Reduced default timeout to 5s for better UX during connection testing
+const DEFAULT_TIMEOUT = 5000; 
 
 // --- MOCK DATA GENERATION HELPERS ---
 const REGIONS = ['US-East', 'US-West', 'EU-Central', 'EU-West', 'Asia-Pacific', 'SA-East', 'Oceania'];
@@ -61,9 +62,10 @@ let MOCK_STATS: NetworkStats = {
 
 // --- RPC CLIENT IMPLEMENTATION ---
 
-async function fetchRpc<T>(method: string, params: any[] = []): Promise<T> {
+async function fetchRpc<T>(method: string, params: any[] = [], timeoutOverride?: number): Promise<T> {
+  const timeoutMs = timeoutOverride || DEFAULT_TIMEOUT;
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), DEFAULT_TIMEOUT);
+  const id = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     try {
@@ -89,7 +91,7 @@ async function fetchRpc<T>(method: string, params: any[] = []): Promise<T> {
     clearTimeout(id);
 
     if (!response.ok) {
-      throw new Error(`RPC Error: ${response.statusText}`);
+      throw new Error(`RPC Error: ${response.status} ${response.statusText}`);
     }
 
     const data: JsonRpcResponse<T> = await response.json();
@@ -99,8 +101,15 @@ async function fetchRpc<T>(method: string, params: any[] = []): Promise<T> {
     }
 
     return data.result;
-  } catch (error) {
+  } catch (error: any) {
     clearTimeout(id);
+    if (error.name === 'AbortError') {
+        throw new Error(`Request timed out after ${timeoutMs/1000}s. The endpoint might be unreachable or blocked by CORS.`);
+    }
+    if (error.name === 'TypeError' && error.message === 'Failed to fetch') {
+        // Enhance generic fetch error to explain CORS
+        throw new Error("Connection Blocked: The browser could not connect to the RPC endpoint. This is typically due to CORS (Cross-Origin Resource Sharing) restrictions on public nodes. Please switch to Simulation Mode or use a proxy.");
+    }
     throw error;
   }
 }
@@ -127,10 +136,16 @@ export const pNodeService = {
   },
 
   getRpcEndpoint: () => RPC_ENDPOINT,
+  
+  // Set explicit flag for simulation mode vs live mode
+  setUseLive: (useLive: boolean) => {
+      pNodeService.isUsingLive = useLive;
+  },
 
+  // Use a shorter timeout for testing connection to provide quick feedback
   testConnection: async (): Promise<{ success: boolean; message: string; version?: string }> => {
     try {
-        const result = await fetchRpc<any>('getVersion');
+        const result = await fetchRpc<any>('getVersion', [], 5000); 
         return { 
             success: true, 
             message: "Successfully connected to pNode RPC",
@@ -144,6 +159,12 @@ export const pNodeService = {
   // --- Core Data Fetching ---
 
   getAllNodes: async (): Promise<PNode[]> => {
+    // If explicitly set to simulation mode (e.g. after a CORS failure), skip the network request
+    if (!pNodeService.isUsingLive) {
+        await delay(400); 
+        return MOCK_NODES;
+    }
+
     try {
       const clusterNodes = await fetchRpc<RpcClusterNode[]>('getClusterNodes');
       pNodeService.isUsingLive = true;
@@ -179,6 +200,12 @@ export const pNodeService = {
   },
 
   getNetworkStats: async (): Promise<NetworkStats> => {
+    // Skip if simulation is forced
+    if (!pNodeService.isUsingLive) {
+        await delay(400);
+        return MOCK_STATS;
+    }
+
     try {
       const epochInfo = await fetchRpc<RpcEpochInfo>('getEpochInfo');
       const nodes = await pNodeService.getAllNodes();
@@ -271,17 +298,27 @@ export const pNodeService = {
     
     // Simulate data changes every 2 seconds
     updateInterval = setInterval(() => {
-        // 1. Update Stats
+        // 1. Update Stats - TPS Fluctuation
         const newTps = Math.max(1000, MOCK_STATS.tps + Math.floor((Math.random() - 0.5) * 500));
+        
+        // 2. Simulate Node Count Fluctuation (To trigger "Active Nodes" animation in UI)
+        let activeNodes = MOCK_STATS.active_nodes;
+        // 20% chance to change active node count
+        if (Math.random() > 0.8) {
+            const change = Math.random() > 0.5 ? 1 : -1;
+            activeNodes = Math.max(10, Math.min(MOCK_STATS.total_nodes, activeNodes + change));
+        }
+
         MOCK_STATS = {
             ...MOCK_STATS,
             tps: newTps,
+            active_nodes: activeNodes,
             last_updated: new Date().toISOString(),
             // Simulate slow epoch progression
-            current_epoch: Math.random() > 0.95 ? MOCK_STATS.current_epoch + 1 : MOCK_STATS.current_epoch
+            current_epoch: Math.random() > 0.98 ? MOCK_STATS.current_epoch + 1 : MOCK_STATS.current_epoch
         };
 
-        // 2. Update Random Nodes (Latency/Uptime jitter)
+        // 3. Update Random Nodes (Latency/Uptime jitter)
         MOCK_NODES = MOCK_NODES.map(node => {
             if (Math.random() > 0.8) {
                 return {
@@ -293,7 +330,7 @@ export const pNodeService = {
             return node;
         });
 
-        // 3. Notify Listeners
+        // 4. Notify Listeners
         const update: RealtimeUpdate = {
             type: 'full',
             stats: MOCK_STATS,
@@ -372,9 +409,14 @@ export const pNodeService = {
       // Logic to calculate grade based on uptime, latency, etc.
       let score = 0;
       score += node.uptime_percentage; // Max 100
-      score += (1000 - Math.min(node.latency_ms, 1000)) / 20; // Max 50 (if 0ms) -> usually 40ish
+      
+      // Latency scoring: Lower is better. 0ms = 50 pts, 1000ms = 0 pts.
+      const latencyScoreRaw = (1000 - Math.min(node.latency_ms, 1000)) / 20; 
+      score += latencyScoreRaw;
       
       // Normalize roughly to 100 base
+      // Max raw score is approx 150. (100 uptime + 50 latency)
+      // We map 150 -> 100, 75 -> 50
       const finalScore = Math.min(100, (score / 150) * 100 + 10);
       
       let grade: ValidatorGrade['grade'] = 'F';
@@ -389,8 +431,9 @@ export const pNodeService = {
           score: Math.floor(finalScore),
           metrics: {
               uptimeScore: Math.floor(node.uptime_percentage),
+              // Convert latency to a 0-100 scale for consistency in UI progress bars
               latencyScore: Math.floor((1000 - Math.min(node.latency_ms, 1000)) / 10),
-              consistencyScore: 90 // Mocked for now
+              consistencyScore: 90 // Mocked for now, assumes good block production
           }
       };
   },
@@ -410,5 +453,62 @@ export const pNodeService = {
           nodesAffected: affectedNodes.length,
           stakeAffected: affectedStake
       };
+  },
+
+  // --- Chat Bot Feature ---
+
+  chatWithAI: async (message: string, history: {role: 'user' | 'model', text: string}[]): Promise<string> => {
+    if (!process.env.API_KEY) {
+        return "API Key is missing. Please configure it to use the chatbot.";
+    }
+
+    try {
+        // Fetch fresh stats for context
+        const stats = await pNodeService.getNetworkStats();
+        
+        const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+        const model = 'gemini-3-pro-preview';
+
+        const statsContext = `
+        [SYSTEM CONTEXT - CURRENT NETWORK STATE]
+        - Network: Xandeum Network (Mainnet Beta)
+        - Total Nodes: ${stats.total_nodes}
+        - Active Nodes: ${stats.active_nodes}
+        - Delinquent Nodes: ${stats.delinquent_nodes}
+        - Current TPS: ${stats.tps}
+        - Current Epoch: ${stats.current_epoch}
+        - Average Uptime: ${stats.average_uptime.toFixed(2)}%
+        - Last Updated: ${stats.last_updated}
+        `;
+
+        const systemInstruction = `You are "XandBot", an intelligent assistant for the Xandeum Network Analytics Dashboard. 
+        Your goal is to help users understand the Xandeum blockchain network, interpret validator statistics, and troubleshoot node issues.
+        
+        Guidelines:
+        1. Use the provided [SYSTEM CONTEXT] to answer questions about the current network state accurately.
+        2. If asked about specific validators, explain that you can guide them to the "Validators" page but cannot see specific node details in this chat window unless provided.
+        3. Keep answers concise, professional, and helpful.
+        4. Use bold text for key metrics.
+        5. You are equipped with a thinking process for complex queries. Use it to reason through network scenarios if asked complex questions about consensus or outages.
+        `;
+
+        const chat = ai.chats.create({
+            model: model,
+            config: {
+                systemInstruction: systemInstruction + statsContext,
+                thinkingConfig: { thinkingBudget: 32768 }
+            },
+            history: history.map(h => ({
+                role: h.role,
+                parts: [{ text: h.text }]
+            }))
+        });
+
+        const result = await chat.sendMessage({ message: message });
+        return result.text;
+    } catch (error) {
+        console.error("Chat Error", error);
+        return "I apologize, but I'm having trouble connecting to the network intelligence at the moment. Please try again later.";
+    }
   }
 };

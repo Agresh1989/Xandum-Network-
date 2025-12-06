@@ -188,14 +188,14 @@ export const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Node Table */}
+      {/* Node List Container */}
       <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-        <div className="p-6 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="p-6 border-b border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex items-center gap-2">
              <h3 className="text-lg font-bold text-slate-800">pNode Validators</h3>
              <span className="px-2 py-0.5 rounded-full bg-slate-100 text-xs text-slate-500 font-mono border border-slate-200">{nodes.length}</span>
           </div>
-          <div className="relative w-full lg:w-64">
+          <div className="relative w-full md:w-64">
             <input 
               type="text" 
               placeholder="Search by ID, Name, or IP..."
@@ -209,7 +209,8 @@ export const Dashboard: React.FC = () => {
           </div>
         </div>
         
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
@@ -287,6 +288,70 @@ export const Dashboard: React.FC = () => {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden">
+            {loading ? (
+                <div className="p-8 text-center text-slate-500">
+                    <i className="fas fa-circle-notch fa-spin text-xl mb-2"></i>
+                    <p>Loading pNode data...</p>
+                </div>
+            ) : filteredNodes.length === 0 ? (
+                 <div className="p-8 text-center text-slate-500">
+                     <p>No validators found.</p>
+                 </div>
+            ) : (
+                <div className="divide-y divide-slate-100">
+                    {filteredNodes.map(node => (
+                        <div key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="p-4 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors">
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-600 border border-slate-200">
+                                        {node.name?.substring(0, 2).toUpperCase() || 'NA'}
+                                    </div>
+                                    <div>
+                                        <div className="font-bold text-slate-900 text-sm">{node.name || 'Unknown Validator'}</div>
+                                        <div className="text-xs text-slate-400 font-mono truncate w-32">{node.id}</div>
+                                    </div>
+                                </div>
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                                    node.status === NodeStatus.ACTIVE ? 'bg-green-50 text-green-700 border-green-200' : 
+                                    node.status === NodeStatus.DELINQUENT ? 'bg-red-50 text-red-700 border-red-200' : 
+                                    'bg-blue-50 text-blue-700 border-blue-200'
+                                }`}>
+                                    {node.status}
+                                </span>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                    <span className="text-slate-400 block mb-1 text-[10px] uppercase font-bold">Stake Weight</span>
+                                    <span className="font-mono text-slate-700 font-medium">{node.stake_weight.toLocaleString()}</span>
+                                </div>
+                                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                                    <span className="text-slate-400 block mb-1 text-[10px] uppercase font-bold">Region</span>
+                                    <span className="text-slate-700 font-medium flex items-center gap-1">
+                                        {ICONS.Globe} {node.region}
+                                    </span>
+                                </div>
+                                <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 col-span-2">
+                                    <div className="flex justify-between mb-1.5">
+                                        <span className="text-slate-400 text-[10px] uppercase font-bold">Uptime Performance</span>
+                                        <span className="font-bold text-slate-700">{node.uptime_percentage.toFixed(2)}%</span>
+                                    </div>
+                                    <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                        <div 
+                                            className={`h-full rounded-full ${node.uptime_percentage > 98 ? 'bg-green-500' : node.uptime_percentage > 90 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                            style={{ width: `${node.uptime_percentage}%`}}
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
       </div>
     </div>

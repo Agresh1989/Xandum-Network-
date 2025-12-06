@@ -1,20 +1,36 @@
+
 import React, { useState } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './pages/Dashboard';
 import { NodeDetail } from './pages/NodeDetail';
 import { Settings } from './pages/Settings';
 import { Simulation } from './pages/Simulation';
+import { Reports } from './pages/Reports';
+import { ChatBot } from './components/ChatBot';
+import { Home } from './pages/Home';
 
-const App: React.FC = () => {
+// Layout Wrapper to handle Sidebar logic conditionally
+const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
+  if (isHome) {
+      return (
+          <>
+            {children}
+            {/* Optional: Chatbot on home page too? Yes. */}
+            <ChatBot /> 
+          </>
+      )
+  }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
+    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
         
-        {/* Mobile Header - Visible only on small screens */}
-        <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        {/* Mobile Header - Visible only on small screens and NOT on home */}
+        <div className="lg:hidden flex items-center justify-between p-4 bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm mobile-header">
            <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-xand-500 to-xand-600 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
                   X
@@ -31,20 +47,33 @@ const App: React.FC = () => {
 
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
         
-        {/* Main Content - Adjust margin for desktop sidebar */}
+        {/* Main Content */}
         <main className="lg:ml-64 p-4 lg:p-8 min-h-screen transition-all duration-300">
           <div className="max-w-7xl mx-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/validators" element={<Navigate to="/" replace />} />
-              <Route path="/node/:id" element={<NodeDetail />} />
-              <Route path="/simulation" element={<Simulation />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
+             {children}
           </div>
         </main>
-      </div>
+
+        <ChatBot />
+    </div>
+  );
+}
+
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AppLayout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/validators" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/node/:id" element={<NodeDetail />} />
+          <Route path="/simulation" element={<Simulation />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AppLayout>
     </Router>
   );
 };

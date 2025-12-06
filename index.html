@@ -58,6 +58,34 @@
         background: #e2e8f0;
         border-radius: 3px;
       }
+
+      /* Print Styles for PDF Generation */
+      @media print {
+        @page {
+          size: A4;
+          margin: 1cm;
+        }
+        body {
+          background-color: white !important;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+        .sidebar-container, .mobile-header, .no-print {
+          display: none !important;
+        }
+        main {
+          margin-left: 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+        }
+        .print-break {
+          page-break-before: always;
+        }
+        .shadow-sm, .shadow-md, .shadow-xl {
+          box-shadow: none !important;
+          border: 1px solid #e2e8f0 !important;
+        }
+      }
     </style>
   <script type="importmap">
 {

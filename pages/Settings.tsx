@@ -1,8 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
 import { pNodeService } from '../services/pNodeService';
 import { ICONS } from '../constants';
+import { useNavigate } from 'react-router-dom';
 
 export const Settings: React.FC = () => {
+  const navigate = useNavigate();
   const [endpoint, setEndpoint] = useState('');
   const [status, setStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [statusMsg, setStatusMsg] = useState('');
@@ -42,7 +45,7 @@ export const Settings: React.FC = () => {
     setDebugResult('');
     try {
         const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), 5000);
+        const id = setTimeout(() => controller.abort(), 10000); // 10s timeout
         
         const response = await fetch(endpoint, {
             method: 'POST',
@@ -59,10 +62,23 @@ export const Settings: React.FC = () => {
         const data = await response.json();
         setDebugResult(JSON.stringify(data, null, 2));
     } catch (e: any) {
-        setDebugResult(`Error: ${e.message}`);
+        if (e.name === 'AbortError') {
+             setDebugResult(`Error: Request timed out. The endpoint '${endpoint}' may be unreachable or blocking cross-origin (CORS) requests.`);
+        } else if (e.name === 'TypeError' && e.message === 'Failed to fetch') {
+             setDebugResult(`Error: Connection blocked by browser (CORS). Public RPC nodes typically block requests from web applications.\n\nWorkaround: Use a backend proxy or switch to Simulation Mode.`);
+        } else {
+             setDebugResult(`Error: ${e.message}`);
+        }
     } finally {
         setDebugLoading(false);
     }
+  };
+
+  const handleReset = () => {
+      // In a real app, this might reset a flag, but here we just clear the error state UI
+      setStatus('idle');
+      setStatusMsg('');
+      navigate('/');
   };
 
   return (
@@ -73,7 +89,6 @@ export const Settings: React.FC = () => {
             <h2 className="text-lg font-bold text-slate-800 mb-4">RPC Configuration</h2>
             <p className="text-slate-500 text-sm mb-4">
                 Configure the pRPC endpoint used to fetch validator data. 
-                If the official endpoint is restricted (CORS) or down, you can use a local proxy or alternative node.
             </p>
 
             <div className="flex flex-col gap-2 mb-4">
@@ -96,18 +111,38 @@ export const Settings: React.FC = () => {
             </div>
 
             {status !== 'idle' && (
-                <div className={`p-4 rounded-lg border flex items-center gap-3 ${
+                <div className={`p-4 rounded-lg border flex flex-col gap-2 ${
                     status === 'testing' ? 'bg-blue-50 border-blue-200 text-blue-600' :
                     status === 'success' ? 'bg-green-50 border-green-200 text-green-600' :
                     'bg-red-50 border-red-200 text-red-600'
                 }`}>
-                    {status === 'testing' && <i className="fas fa-circle-notch fa-spin"></i>}
-                    {status === 'success' && <i className="fas fa-check-circle"></i>}
-                    {status === 'error' && <i className="fas fa-exclamation-triangle"></i>}
-                    <div>
-                        <div className="font-medium text-sm">{statusMsg}</div>
-                        {nodeVersion && <div className="text-xs opacity-75 mt-1">Node Version: {nodeVersion}</div>}
+                    <div className="flex items-center gap-3">
+                        {status === 'testing' && <i className="fas fa-circle-notch fa-spin"></i>}
+                        {status === 'success' && <i className="fas fa-check-circle"></i>}
+                        {status === 'error' && <i className="fas fa-exclamation-triangle"></i>}
+                        <div>
+                            <div className="font-medium text-sm">{statusMsg}</div>
+                            {nodeVersion && <div className="text-xs opacity-75 mt-1">Node Version: {nodeVersion}</div>}
+                        </div>
                     </div>
+
+                    {status === 'error' && statusMsg.includes("CORS") && (
+                        <div className="mt-2 pl-8">
+                            <div className="text-xs text-slate-700 bg-white p-3 rounded border border-red-100">
+                                <strong>Why is this happening?</strong><br/>
+                                Browsers block requests to external servers that don't explicitly allow it (CORS). Public RPC nodes usually don't allow this for security.
+                                <br/><br/>
+                                <strong>Recommendation:</strong><br/>
+                                Since you are viewing this in a browser without a backend proxy, please use <strong>Simulation Mode</strong> to fully explore the dashboard features.
+                            </div>
+                            <button 
+                                onClick={handleReset}
+                                className="mt-3 text-xs bg-slate-800 text-white px-4 py-2 rounded hover:bg-slate-700 transition-colors"
+                            >
+                                Continue in Simulation Mode
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

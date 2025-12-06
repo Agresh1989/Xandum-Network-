@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ICONS } from '../constants';
@@ -9,9 +10,10 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: ICONS.Dashboard },
+    { name: 'Dashboard', path: '/dashboard', icon: ICONS.Dashboard },
     { name: 'Validators', path: '/validators', icon: ICONS.Nodes },
     { name: 'Simulation', path: '/simulation', icon: ICONS.Warning },
+    { name: 'Reports', path: '/reports', icon: ICONS.Report },
     { name: 'Settings', path: '/settings', icon: ICONS.Settings },
   ];
 
@@ -27,8 +29,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
       {/* Sidebar Container */}
       <aside 
-        className={`fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 flex flex-col shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`sidebar-container fixed top-0 left-0 h-screen w-64 bg-white border-r border-slate-200 z-50 flex flex-col shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 print:hidden`}
       >
         <div className="h-16 flex items-center justify-between px-6 border-b border-slate-100">
           <div className="flex items-center">
@@ -47,6 +49,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         </div>
 
         <nav className="flex-1 py-6 px-3 space-y-1 overflow-y-auto custom-scrollbar">
+          {/* Return to Home Button */}
+          <NavLink
+              to="/"
+              className="flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all text-slate-600 hover:bg-slate-50 hover:text-xand-600 mb-2 group"
+            >
+              <span className="w-6 mr-2 text-center group-hover:-translate-x-1 transition-transform duration-200">{ICONS.Home}</span>
+              Return to Home
+          </NavLink>
+
+          <div className="h-px bg-slate-100 mx-4 mb-4"></div>
+
           {navItems.map((item) => (
             <NavLink
               key={item.path}

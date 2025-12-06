@@ -92,3 +92,9 @@ export interface ResilienceStats {
   nodesAffected: number;
   stakeAffected: number;
 }
+
+export interface ChatMessage {
+  role: 'user' | 'model';
+  text: string;
+  timestamp: Date;
+}

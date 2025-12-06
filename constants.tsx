@@ -12,5 +12,8 @@ export const ICONS = {
   Globe: <i className="fas fa-globe"></i>,
   Clock: <i className="fas fa-clock"></i>,
   AI: <i className="fas fa-robot"></i>,
-  External: <i className="fas fa-external-link-alt"></i>
+  External: <i className="fas fa-external-link-alt"></i>,
+  Report: <i className="fas fa-file-alt"></i>,
+  Home: <i className="fas fa-home"></i>,
+  Back: <i className="fas fa-arrow-left"></i>
 };
