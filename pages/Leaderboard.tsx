@@ -81,32 +81,15 @@ export const Leaderboard: React.FC = () => {
   return (
     <div className="space-y-8 animate-fade-in max-w-6xl mx-auto">
         <div className="text-center md:text-left">
-            <h1 className="text-3xl font-bold text-slate-900">Validator Leaderboard</h1>
-            <p className="text-slate-500 mt-2">Recognizing top performing nodes across the Xandeum Network.</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-900">Validator Leaderboard</h1>
+            <p className="text-slate-500 mt-2 text-sm md:text-base">Recognizing top performing nodes across the Xandeum Network.</p>
         </div>
 
         {/* Podium Section */}
         {top3.length === 3 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end mb-12 px-4 md:px-12 relative">
-                {/* 2nd Place */}
-                <div className="order-2 md:order-1 flex flex-col items-center">
-                    <div className="relative mb-4 group cursor-pointer" onClick={() => navigate(`/node/${top3[1].id}`)}>
-                        <div className="w-20 h-20 rounded-full border-4 border-slate-300 bg-slate-100 flex items-center justify-center text-xl font-bold text-slate-500 overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
-                            {top3[1].name?.substring(0, 2).toUpperCase()}
-                        </div>
-                        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-400 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
-                            #2
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="font-bold text-slate-800 truncate max-w-[150px]">{top3[1].name}</div>
-                        <div className="text-sm text-slate-500 font-mono text-xs">{top3[1].gradeInfo.score} pts</div>
-                    </div>
-                    <div className="h-24 w-full bg-slate-100 mt-4 rounded-t-lg border-x border-t border-slate-200"></div>
-                </div>
-
-                {/* 1st Place */}
-                <div className="order-1 md:order-2 flex flex-col items-center z-10">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-6 items-end mb-12 px-2 sm:px-4 md:px-12 relative">
+                {/* 1st Place (Mobile: First) */}
+                <div className="order-1 md:order-2 flex flex-col items-center z-10 w-full mb-6 md:mb-0">
                     <div className="relative mb-4 group cursor-pointer" onClick={() => navigate(`/node/${top3[0].id}`)}>
                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-yellow-400 text-3xl animate-bounce">
                              <i className="fas fa-crown"></i>
@@ -123,13 +106,31 @@ export const Leaderboard: React.FC = () => {
                         <div className="text-xand-600 font-bold">{top3[0].gradeInfo.score} Points</div>
                         <div className="text-xs text-slate-400 mt-1">{top3[0].uptime_percentage.toFixed(2)}% Uptime</div>
                     </div>
-                    <div className="h-32 w-full bg-gradient-to-t from-xand-50 to-white mt-4 rounded-t-lg border-x border-t border-slate-200 shadow-sm relative overflow-hidden">
+                    {/* Desktop only pedestal */}
+                    <div className="hidden md:block h-32 w-full bg-gradient-to-t from-xand-50 to-white mt-4 rounded-t-lg border-x border-t border-slate-200 shadow-sm relative overflow-hidden">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
                     </div>
                 </div>
 
+                {/* 2nd Place */}
+                <div className="order-2 md:order-1 flex flex-col items-center w-full">
+                    <div className="relative mb-4 group cursor-pointer" onClick={() => navigate(`/node/${top3[1].id}`)}>
+                        <div className="w-20 h-20 rounded-full border-4 border-slate-300 bg-slate-100 flex items-center justify-center text-xl font-bold text-slate-500 overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
+                            {top3[1].name?.substring(0, 2).toUpperCase()}
+                        </div>
+                        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-slate-400 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
+                            #2
+                        </div>
+                    </div>
+                    <div className="text-center">
+                        <div className="font-bold text-slate-800 truncate max-w-[150px]">{top3[1].name}</div>
+                        <div className="text-sm text-slate-500 font-mono text-xs">{top3[1].gradeInfo.score} pts</div>
+                    </div>
+                    <div className="hidden md:block h-24 w-full bg-slate-100 mt-4 rounded-t-lg border-x border-t border-slate-200"></div>
+                </div>
+
                 {/* 3rd Place */}
-                <div className="order-3 flex flex-col items-center">
+                <div className="order-3 flex flex-col items-center w-full">
                     <div className="relative mb-4 group cursor-pointer" onClick={() => navigate(`/node/${top3[2].id}`)}>
                         <div className="w-20 h-20 rounded-full border-4 border-orange-300 bg-orange-50 flex items-center justify-center text-xl font-bold text-orange-700 overflow-hidden shadow-lg group-hover:scale-105 transition-transform">
                             {top3[2].name?.substring(0, 2).toUpperCase()}
@@ -142,13 +143,13 @@ export const Leaderboard: React.FC = () => {
                         <div className="font-bold text-slate-800 truncate max-w-[150px]">{top3[2].name}</div>
                         <div className="text-sm text-slate-500 font-mono text-xs">{top3[2].gradeInfo.score} pts</div>
                     </div>
-                    <div className="h-16 w-full bg-slate-50 mt-4 rounded-t-lg border-x border-t border-slate-200"></div>
+                    <div className="hidden md:block h-16 w-full bg-slate-50 mt-4 rounded-t-lg border-x border-t border-slate-200"></div>
                 </div>
             </div>
         )}
 
-        {/* Quick Lists Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        {/* Quick Lists Row - Optimized for Tablet/Mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2">
                     <i className="fas fa-bolt text-xand-500"></i> Best Latency
@@ -181,7 +182,7 @@ export const Leaderboard: React.FC = () => {
                     ))}
                 </ul>
             </div>
-            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+            <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm sm:col-span-2 lg:col-span-1">
                 <h3 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2">
                     <i className="fas fa-coins text-yellow-500"></i> Top Stake Holders
                 </h3>
@@ -201,18 +202,18 @@ export const Leaderboard: React.FC = () => {
 
         {/* Full Ranking Table */}
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+            <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                  <h2 className="text-lg font-bold text-slate-800">Global Rankings</h2>
                  <span className="text-xs text-slate-500 italic">Showing top 100 nodes</span>
             </div>
             <div className="overflow-x-auto">
-                <table className="w-full text-left">
+                <table className="w-full text-left min-w-[700px]">
                     <thead>
                         <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
-                            <th className="px-6 py-4 font-semibold w-16">Rank</th>
-                            <th className="px-6 py-4 font-semibold">Validator</th>
+                            <th className="px-4 sm:px-6 py-4 font-semibold w-16">Rank</th>
+                            <th className="px-4 sm:px-6 py-4 font-semibold">Validator</th>
                             <th 
-                                className="px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
+                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
                                 onClick={() => handleSort('score')}
                             >
                                 <div className="flex items-center gap-1">
@@ -221,7 +222,7 @@ export const Leaderboard: React.FC = () => {
                                 </div>
                             </th>
                             <th 
-                                className="px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
+                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
                                 onClick={() => handleSort('uptime_percentage')}
                             >
                                 <div className="flex items-center gap-1">
@@ -230,7 +231,7 @@ export const Leaderboard: React.FC = () => {
                                 </div>
                             </th>
                             <th 
-                                className="px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
+                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
                                 onClick={() => handleSort('stake_weight')}
                             >
                                 <div className="flex items-center gap-1">
@@ -239,7 +240,7 @@ export const Leaderboard: React.FC = () => {
                                 </div>
                             </th>
                             <th 
-                                className="px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors text-right"
+                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors text-right"
                                 onClick={() => handleSort('latency_ms')}
                             >
                                 <div className="flex items-center justify-end gap-1">
@@ -252,8 +253,8 @@ export const Leaderboard: React.FC = () => {
                     <tbody className="divide-y divide-slate-100">
                         {sortedNodes.slice(0, 100).map((node, index) => (
                             <tr key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer group">
-                                <td className="px-6 py-4 font-mono text-slate-400 text-sm">#{index + 1}</td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 sm:px-6 py-4 font-mono text-slate-400 text-sm">#{index + 1}</td>
+                                <td className="px-4 sm:px-6 py-4">
                                     <div className="flex items-center gap-3">
                                         <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 border border-slate-200">
                                             {node.name?.substring(0, 2).toUpperCase()}
@@ -264,7 +265,7 @@ export const Leaderboard: React.FC = () => {
                                         </div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 sm:px-6 py-4">
                                     <div className="flex items-center gap-2">
                                         <span className={`text-lg font-bold ${
                                             node.gradeInfo.score >= 90 ? 'text-green-600' : 
@@ -281,16 +282,16 @@ export const Leaderboard: React.FC = () => {
                                         </span>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-4 sm:px-6 py-4">
                                     <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden mb-1">
                                         <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
                                     </div>
                                     <span className="text-xs text-slate-600 font-medium">{node.uptime_percentage.toFixed(2)}%</span>
                                 </td>
-                                <td className="px-6 py-4 font-mono text-sm text-slate-600">
+                                <td className="px-4 sm:px-6 py-4 font-mono text-sm text-slate-600">
                                     {node.stake_weight.toLocaleString()}
                                 </td>
-                                <td className="px-6 py-4 text-right font-mono text-sm text-slate-600">
+                                <td className="px-4 sm:px-6 py-4 text-right font-mono text-sm text-slate-600">
                                     {node.latency_ms}ms
                                 </td>
                             </tr>

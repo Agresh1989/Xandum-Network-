@@ -90,13 +90,13 @@ export const Dashboard: React.FC = () => {
         onClick={() => navigate('/settings')}
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white rounded-lg p-4 border border-slate-200 cursor-pointer hover:border-xand-300 transition-colors group shadow-sm gap-3 sm:gap-0"
       >
-        <div className="flex items-center gap-2">
-          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${isLive ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`}></div>
+        <div className="flex items-start sm:items-center gap-2">
+          <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1.5 sm:mt-0 ${isLive ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`}></div>
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-slate-700 leading-tight">
                 {isLive ? 'Connected to pNode RPC (Live)' : 'Simulation Mode (Mock Data)'}
             </span>
-            {!isLive && <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200 w-fit">RPC Unreachable</span>}
+            {!isLive && <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded border border-slate-200 w-fit mt-1 sm:mt-0">RPC Unreachable</span>}
           </div>
         </div>
         <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
@@ -163,7 +163,7 @@ export const Dashboard: React.FC = () => {
                 {aiAnalysis ? 'Refresh' : 'Analyze'}
               </button>
            </div>
-           <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 flex-1 flex items-center justify-center">
+           <div className="bg-slate-50 rounded-lg p-4 border border-slate-100 flex-1 flex items-center justify-center min-h-[150px]">
               {analyzing ? (
                   <div className="flex flex-col items-center gap-2">
                      <i className="fas fa-circle-notch fa-spin text-xand-500"></i>

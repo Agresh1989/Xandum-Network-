@@ -6,6 +6,7 @@ import { ICONS } from '../constants';
 export const Home: React.FC = () => {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Scroll effect for navbar
   useEffect(() => {
@@ -16,6 +17,7 @@ export const Home: React.FC = () => {
 
   const scrollToSection = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
+    setMobileMenuOpen(false); // Close mobile menu on click
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -27,19 +29,21 @@ export const Home: React.FC = () => {
       
       {/* Dynamic Background Blobs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div className="absolute -top-[20%] -right-[10%] w-[800px] h-[800px] bg-gradient-to-br from-xand-100 to-indigo-100 rounded-full blur-3xl opacity-60 animate-pulse" style={{animationDuration: '8s'}}></div>
-        <div className="absolute top-[40%] -left-[10%] w-[600px] h-[600px] bg-gradient-to-tr from-blue-50 to-emerald-50 rounded-full blur-3xl opacity-60 animate-pulse" style={{animationDuration: '10s', animationDelay: '1s'}}></div>
+        <div className="absolute -top-[20%] -right-[10%] w-[400px] lg:w-[800px] h-[400px] lg:h-[800px] bg-gradient-to-br from-xand-100 to-indigo-100 rounded-full blur-3xl opacity-60 animate-pulse" style={{animationDuration: '8s'}}></div>
+        <div className="absolute top-[40%] -left-[10%] w-[300px] lg:w-[600px] h-[300px] lg:h-[600px] bg-gradient-to-tr from-blue-50 to-emerald-50 rounded-full blur-3xl opacity-60 animate-pulse" style={{animationDuration: '10s', animationDelay: '1s'}}></div>
       </div>
 
       {/* Modern Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md border-b border-slate-200 py-3' : 'bg-transparent py-5'}`}>
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || mobileMenuOpen ? 'bg-white/90 backdrop-blur-md border-b border-slate-200 py-3' : 'bg-transparent py-4 lg:py-5'}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <div className="w-9 h-9 bg-gradient-to-br from-xand-500 to-xand-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-xand-500/20">
+                <div className="w-8 h-8 lg:w-9 lg:h-9 bg-gradient-to-br from-xand-500 to-xand-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg shadow-xand-500/20">
                     X
                 </div>
-                <span className="text-xl font-bold tracking-tight text-slate-900">Xandeum <span className="text-xand-600">Network</span></span>
+                <span className="text-lg lg:text-xl font-bold tracking-tight text-slate-900">Xandeum <span className="text-xand-600">Network</span></span>
             </div>
+
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
                 <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-sm font-medium text-slate-600 hover:text-xand-600 transition-colors cursor-pointer">Features</a>
                 <a href="#developers" onClick={(e) => scrollToSection(e, 'developers')} className="text-sm font-medium text-slate-600 hover:text-xand-600 transition-colors cursor-pointer">Developers</a>
@@ -51,14 +55,37 @@ export const Home: React.FC = () => {
                     Launch App
                 </button>
             </div>
+
+            {/* Mobile Hamburger */}
+            <button 
+                className="md:hidden text-slate-700 p-2"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+                <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+            </button>
         </div>
+
+        {/* Mobile Menu Dropdown */}
+        {mobileMenuOpen && (
+            <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-slate-200 shadow-xl animate-fade-in px-6 py-6 flex flex-col gap-4">
+                <a href="#features" onClick={(e) => scrollToSection(e, 'features')} className="text-base font-medium text-slate-700 py-2 border-b border-slate-100">Features</a>
+                <a href="#developers" onClick={(e) => scrollToSection(e, 'developers')} className="text-base font-medium text-slate-700 py-2 border-b border-slate-100">Developers</a>
+                <a href="#ecosystem" onClick={(e) => scrollToSection(e, 'ecosystem')} className="text-base font-medium text-slate-700 py-2 border-b border-slate-100">Ecosystem</a>
+                <button 
+                    onClick={() => navigate('/dashboard')}
+                    className="w-full mt-2 px-5 py-3 bg-xand-600 text-white rounded-lg text-base font-bold shadow-md active:scale-95 transition-transform"
+                >
+                    Launch Dashboard
+                </button>
+            </div>
+        )}
       </nav>
 
       {/* Hero Section */}
-      <section className="relative z-10 pt-32 pb-20 lg:pt-48 lg:pb-32 px-6">
+      <section className="relative z-10 pt-28 pb-12 lg:pt-48 lg:pb-32 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8 animate-fade-in-up">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full shadow-sm">
+            <div className="space-y-6 lg:space-y-8 animate-fade-in-up text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-full shadow-sm mx-auto lg:mx-0">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-xand-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-xand-500"></span>
@@ -66,51 +93,51 @@ export const Home: React.FC = () => {
                     <span className="text-xs font-bold text-slate-600 uppercase tracking-wide">Mainnet Beta Live</span>
                 </div>
                 
-                <h1 className="text-5xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1]">
+                <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1]">
                     Scaling Storage on <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-xand-500 via-indigo-500 to-purple-600">
                         Solana
                     </span>
                 </h1>
                 
-                <p className="text-xl text-slate-600 leading-relaxed max-w-lg">
+                <p className="text-lg sm:text-xl text-slate-600 leading-relaxed max-w-lg mx-auto lg:mx-0">
                     Experience the next evolution of blockchain infrastructure. Monitor pNodes, analyze storage metrics, and visualize network consensus in real-time.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row gap-4 pt-2 justify-center lg:justify-start">
                     <button 
                         onClick={() => navigate('/dashboard')}
-                        className="px-8 py-4 bg-xand-600 hover:bg-xand-700 text-white rounded-xl font-bold text-lg shadow-xl shadow-xand-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2"
+                        className="px-8 py-4 bg-xand-600 hover:bg-xand-700 text-white rounded-xl font-bold text-lg shadow-xl shadow-xand-500/30 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-2 w-full sm:w-auto"
                     >
                         Explore Network {ICONS.Dashboard}
                     </button>
                     <button 
                         onClick={() => navigate('/simulation')}
-                        className="px-8 py-4 bg-white border border-slate-200 hover:border-xand-200 text-slate-700 hover:text-xand-700 rounded-xl font-bold text-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 group"
+                        className="px-8 py-4 bg-white border border-slate-200 hover:border-xand-200 text-slate-700 hover:text-xand-700 rounded-xl font-bold text-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 group w-full sm:w-auto"
                     >
                         Run Simulation <span className="group-hover:rotate-12 transition-transform duration-300">{ICONS.Warning}</span>
                     </button>
                 </div>
 
-                <div className="pt-8 flex items-center gap-6 text-slate-400 text-sm font-medium">
+                <div className="pt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 text-slate-400 text-sm font-medium">
                     <span>Trusted by leaders in</span>
                     <div className="flex gap-4 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
                         <span className="font-bold text-slate-600"><i className="fas fa-cube mr-1"></i> SOLANA</span>
                         <span className="font-bold text-slate-600"><i className="fas fa-layer-group mr-1"></i> ARWEAVE</span>
-                        <span className="font-bold text-slate-600"><i className="fas fa-database mr-1"></i> FIELCOIN</span>
+                        <span className="font-bold text-slate-600"><i className="fas fa-database mr-1"></i> FILECOIN</span>
                     </div>
                 </div>
             </div>
 
             {/* Hero Visual - Abstract Network */}
-            <div className="relative h-[400px] lg:h-[500px] flex items-center justify-center animate-fade-in lg:translate-x-12">
+            <div className="relative h-[300px] lg:h-[500px] flex items-center justify-center animate-fade-in lg:translate-x-12 mt-8 lg:mt-0">
                 {/* Simulated Network Graph */}
                 <div className="relative w-full h-full max-w-md mx-auto">
                     <div className="absolute inset-0 bg-gradient-to-tr from-xand-50 to-indigo-50 rounded-full blur-2xl opacity-50"></div>
                     
                     {/* Central Hub */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full shadow-2xl flex items-center justify-center z-20 border-4 border-slate-50">
-                        <div className="w-16 h-16 bg-gradient-to-br from-xand-500 to-indigo-600 rounded-full animate-pulse flex items-center justify-center text-white text-3xl shadow-inner">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 lg:w-24 lg:h-24 bg-white rounded-full shadow-2xl flex items-center justify-center z-20 border-4 border-slate-50">
+                        <div className="w-10 h-10 lg:w-16 lg:h-16 bg-gradient-to-br from-xand-500 to-indigo-600 rounded-full animate-pulse flex items-center justify-center text-white text-xl lg:text-3xl shadow-inner">
                             <i className="fas fa-network-wired"></i>
                         </div>
                     </div>
@@ -120,15 +147,15 @@ export const Home: React.FC = () => {
                         <div key={i} className="absolute top-1/2 left-1/2 w-2 h-2" style={{
                             animation: `spin ${10 + i * 5}s linear infinite`,
                         }}>
-                             <div className="absolute top-0 -left-[120px] lg:-left-[180px]" style={{
+                             <div className="absolute top-0 -left-[100px] lg:-left-[180px]" style={{
                                  transform: `rotate(${i * 60}deg)`
                              }}>
-                                <div className="w-12 h-12 bg-white rounded-xl shadow-lg border border-slate-100 flex flex-col items-center justify-center p-2 transform hover:scale-110 transition-transform duration-300 z-10">
-                                    <div className="w-2 h-2 rounded-full bg-green-500 mb-1"></div>
-                                    <div className="h-1 w-6 bg-slate-200 rounded"></div>
+                                <div className="w-8 h-8 lg:w-12 lg:h-12 bg-white rounded-xl shadow-lg border border-slate-100 flex flex-col items-center justify-center p-1 lg:p-2 transform hover:scale-110 transition-transform duration-300 z-10">
+                                    <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 rounded-full bg-green-500 mb-0.5 lg:mb-1"></div>
+                                    <div className="h-0.5 lg:h-1 w-4 lg:w-6 bg-slate-200 rounded"></div>
                                 </div>
                                 {/* Connecting Line */}
-                                <div className="absolute top-6 left-6 w-[120px] lg:w-[180px] h-[1px] bg-gradient-to-r from-slate-300 to-transparent origin-left rotate-180 -z-10 opacity-30"></div>
+                                <div className="absolute top-4 lg:top-6 left-4 lg:left-6 w-[100px] lg:w-[180px] h-[1px] bg-gradient-to-r from-slate-300 to-transparent origin-left rotate-180 -z-10 opacity-30"></div>
                              </div>
                         </div>
                     ))}
@@ -138,8 +165,8 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Live Metrics Ticker */}
-      <div className="bg-slate-900 py-4 overflow-hidden relative z-20 border-y border-slate-800">
-          <div className="flex gap-12 whitespace-nowrap animate-marquee text-slate-300 text-sm font-mono tracking-wider">
+      <div className="bg-slate-900 py-3 lg:py-4 overflow-hidden relative z-20 border-y border-slate-800">
+          <div className="flex gap-8 lg:gap-12 whitespace-nowrap animate-marquee text-slate-300 text-xs lg:text-sm font-mono tracking-wider">
               {/* Duplicated content for seamless loop */}
               {[...Array(10)].map((_, i) => (
                   <React.Fragment key={i}>
@@ -153,15 +180,15 @@ export const Home: React.FC = () => {
       </div>
 
       {/* Feature Section */}
-      <section id="features" className="py-24 px-6 relative z-10">
+      <section id="features" className="py-16 lg:py-24 px-4 sm:px-6 relative z-10">
           <div className="max-w-7xl mx-auto">
-              <div className="text-center max-w-3xl mx-auto mb-16">
+              <div className="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
                   <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Intelligence at Scale</h2>
                   <p className="text-lg text-slate-600">The Xandeum dashboard aggregates millions of data points to provide actionable insights into network performance and decentralized storage reliability.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="bg-white p-6 lg:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                       <div className="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 text-2xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                           {ICONS.Dashboard}
                       </div>
@@ -170,7 +197,7 @@ export const Home: React.FC = () => {
                           Monitor block production, vote latency, and skip rates with millisecond precision. View global node distribution and health.
                       </p>
                   </div>
-                  <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="bg-white p-6 lg:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                       <div className="w-14 h-14 bg-purple-50 rounded-xl flex items-center justify-center text-purple-600 text-2xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
                           {ICONS.AI}
                       </div>
@@ -179,7 +206,7 @@ export const Home: React.FC = () => {
                           Integrated Gemini 3 Pro reasoning engine analyzes network anomalies and generates natural language health reports.
                       </p>
                   </div>
-                  <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                  <div className="bg-white p-6 lg:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                       <div className="w-14 h-14 bg-orange-50 rounded-xl flex items-center justify-center text-orange-600 text-2xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition-colors duration-300">
                           {ICONS.Warning}
                       </div>
@@ -193,9 +220,9 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Developer Section */}
-      <section id="developers" className="py-24 bg-slate-900 text-white relative overflow-hidden">
+      <section id="developers" className="py-16 lg:py-24 bg-slate-900 text-white relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+          <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
               <div>
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">Built for Builders</h2>
                   <p className="text-slate-400 text-lg mb-8 leading-relaxed">
@@ -203,31 +230,31 @@ export const Home: React.FC = () => {
                   </p>
                   <div className="flex flex-col gap-4">
                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400">
+                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400 shrink-0">
                               <i className="fas fa-check"></i>
                           </div>
-                          <span className="text-lg font-medium">Standard JSON-RPC 2.0</span>
+                          <span className="text-base lg:text-lg font-medium">Standard JSON-RPC 2.0</span>
                       </div>
                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400">
+                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400 shrink-0">
                               <i className="fas fa-check"></i>
                           </div>
-                          <span className="text-lg font-medium">WebSocket Subscriptions</span>
+                          <span className="text-base lg:text-lg font-medium">WebSocket Subscriptions</span>
                       </div>
                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400">
+                          <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400 shrink-0">
                               <i className="fas fa-check"></i>
                           </div>
-                          <span className="text-lg font-medium">Historical Storage Proofs</span>
+                          <span className="text-base lg:text-lg font-medium">Historical Storage Proofs</span>
                       </div>
                   </div>
-                  <button className="mt-10 px-8 py-3 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-200 transition-colors">
+                  <button className="mt-10 px-8 py-3 bg-white text-slate-900 rounded-lg font-bold hover:bg-slate-200 transition-colors w-full sm:w-auto">
                       Read Documentation
                   </button>
               </div>
 
               {/* Code Snippet Visual */}
-              <div className="bg-slate-950 rounded-xl border border-slate-800 shadow-2xl p-6 font-mono text-sm overflow-hidden relative group">
+              <div className="bg-slate-950 rounded-xl border border-slate-800 shadow-2xl p-4 lg:p-6 font-mono text-xs sm:text-sm overflow-x-auto relative group">
                   <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                       <span className="text-xs text-slate-500">JSON-RPC</span>
                   </div>
@@ -236,7 +263,7 @@ export const Home: React.FC = () => {
                       <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                       <div className="w-3 h-3 rounded-full bg-green-500"></div>
                   </div>
-                  <div className="space-y-1">
+                  <div className="space-y-1 whitespace-pre">
                       <p className="text-purple-400">curl <span className="text-white">https://rpc.xandeum.network</span> \</p>
                       <p className="text-white pl-4">-X POST \</p>
                       <p className="text-white pl-4">-H <span className="text-green-400">"Content-Type: application/json"</span> \</p>
@@ -259,26 +286,26 @@ export const Home: React.FC = () => {
       </section>
 
       {/* Ecosystem / Stats Callout */}
-      <section id="ecosystem" className="py-20 bg-xand-600 relative overflow-hidden">
+      <section id="ecosystem" className="py-16 lg:py-20 bg-xand-600 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
           <div className="max-w-7xl mx-auto px-6 text-center text-white relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-12">Global Network Ecosystem</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                  <div>
-                      <div className="text-4xl md:text-5xl font-black mb-2">124</div>
-                      <div className="text-xand-200 font-medium uppercase tracking-wide">Active pNodes</div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-8">
+                  <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                      <div className="text-3xl md:text-5xl font-black mb-2">124</div>
+                      <div className="text-xand-200 font-medium uppercase tracking-wide text-xs md:text-sm">Active pNodes</div>
                   </div>
-                  <div>
-                      <div className="text-4xl md:text-5xl font-black mb-2">12PB+</div>
-                      <div className="text-xand-200 font-medium uppercase tracking-wide">Storage Capacity</div>
+                  <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                      <div className="text-3xl md:text-5xl font-black mb-2">12PB+</div>
+                      <div className="text-xand-200 font-medium uppercase tracking-wide text-xs md:text-sm">Storage Capacity</div>
                   </div>
-                  <div>
-                      <div className="text-4xl md:text-5xl font-black mb-2">400ms</div>
-                      <div className="text-xand-200 font-medium uppercase tracking-wide">Block Time</div>
+                  <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                      <div className="text-3xl md:text-5xl font-black mb-2">400ms</div>
+                      <div className="text-xand-200 font-medium uppercase tracking-wide text-xs md:text-sm">Block Time</div>
                   </div>
-                  <div>
-                      <div className="text-4xl md:text-5xl font-black mb-2">$0.0001</div>
-                      <div className="text-xand-200 font-medium uppercase tracking-wide">Avg Fee</div>
+                  <div className="p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10">
+                      <div className="text-3xl md:text-5xl font-black mb-2">$0.0001</div>
+                      <div className="text-xand-200 font-medium uppercase tracking-wide text-xs md:text-sm">Avg Fee</div>
                   </div>
               </div>
           </div>
@@ -287,8 +314,8 @@ export const Home: React.FC = () => {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
           <div className="max-w-7xl mx-auto px-6">
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                  <div className="col-span-1 md:col-span-2">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12 text-center md:text-left">
+                  <div className="col-span-1 md:col-span-2 flex flex-col items-center md:items-start">
                       <div className="flex items-center gap-2 mb-4">
                           <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">X</div>
                           <span className="text-xl font-bold text-slate-900">Xandeum Network</span>
