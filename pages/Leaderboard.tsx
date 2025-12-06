@@ -200,13 +200,15 @@ export const Leaderboard: React.FC = () => {
             </div>
         </div>
 
-        {/* Full Ranking Table */}
+        {/* Full Ranking Table Container */}
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
             <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                  <h2 className="text-lg font-bold text-slate-800">Global Rankings</h2>
                  <span className="text-xs text-slate-500 italic">Showing top 100 nodes</span>
             </div>
-            <div className="overflow-x-auto">
+            
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left min-w-[700px]">
                     <thead>
                         <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
@@ -304,6 +306,68 @@ export const Leaderboard: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-slate-100">
+                {sortedNodes.slice(0, 100).map((node, index) => (
+                    <div key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="p-4 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                                <span className="font-mono text-slate-400 text-sm w-6">#{index + 1}</span>
+                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 border border-slate-200">
+                                    {node.name?.substring(0, 2).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div className="font-semibold text-slate-800 text-sm">{node.name}</div>
+                                    <div className="text-xs text-slate-400 font-mono">{node.region}</div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col items-end">
+                                <div className="flex items-center gap-1">
+                                    <span className={`text-lg font-bold ${
+                                        node.gradeInfo.score >= 90 ? 'text-green-600' : 
+                                        node.gradeInfo.score >= 80 ? 'text-blue-600' : 'text-slate-600'
+                                    }`}>
+                                        {node.gradeInfo.score}
+                                    </span>
+                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                            node.gradeInfo.grade.startsWith('A') ? 'bg-green-50 text-green-600 border-green-200' :
+                                            node.gradeInfo.grade.startsWith('B') ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                            'bg-yellow-50 text-yellow-600 border-yellow-200'
+                                    }`}>
+                                        {node.gradeInfo.grade}
+                                    </span>
+                                </div>
+                                <span className="text-[10px] text-slate-400 uppercase">Score</span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Uptime</span>
+                                <div className="flex items-center gap-2">
+                                     <div className="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                        <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
+                                     </div>
+                                     <span className="font-bold text-slate-700">{node.uptime_percentage.toFixed(1)}%</span>
+                                </div>
+                             </div>
+                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Stake</span>
+                                <span className="font-mono font-bold text-slate-700">{node.stake_weight.toLocaleString()}</span>
+                             </div>
+                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Latency</span>
+                                <span className="font-mono font-bold text-slate-700">{node.latency_ms}ms</span>
+                             </div>
+                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                 <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">IP</span>
+                                 <span className="font-mono font-bold text-slate-700 truncate block">{node.ip}</span>
+                             </div>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     </div>
