@@ -11,7 +11,9 @@ import { GoogleGenAI } from "@google/genai";
  * Now includes WebSocket/Simulation support for Real-Time updates.
  */
 
+// Initialize from LocalStorage to ensure persistence across sessions
 let RPC_ENDPOINT = localStorage.getItem('xandeum_rpc_endpoint') || (typeof process !== 'undefined' ? process.env.REACT_APP_RPC_ENDPOINT : undefined) || 'https://rpc.xandeum.network';
+
 // Reduced default timeout to 5s for better UX during connection testing
 const DEFAULT_TIMEOUT = 5000; 
 

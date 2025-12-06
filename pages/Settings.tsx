@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 export const Settings: React.FC = () => {
   const navigate = useNavigate();
-  const [endpoint, setEndpoint] = useState('');
+  // Initialize from service directly (which reads localStorage) to prevent empty flash
+  const [endpoint, setEndpoint] = useState(pNodeService.getRpcEndpoint());
   const [status, setStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [statusMsg, setStatusMsg] = useState('');
   const [nodeVersion, setNodeVersion] = useState<string | null>(null);
@@ -16,6 +17,7 @@ export const Settings: React.FC = () => {
   const [debugResult, setDebugResult] = useState<string>('');
   const [debugLoading, setDebugLoading] = useState(false);
 
+  // Sync state if external changes happen (unlikely in single session, but good practice)
   useEffect(() => {
     setEndpoint(pNodeService.getRpcEndpoint());
   }, []);
@@ -88,7 +90,7 @@ export const Settings: React.FC = () => {
         <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
             <h2 className="text-lg font-bold text-slate-800 mb-4">RPC Configuration</h2>
             <p className="text-slate-500 text-sm mb-4">
-                Configure the pRPC endpoint used to fetch validator data. 
+                Configure the pRPC endpoint used to fetch validator data. Your setting is saved automatically.
             </p>
 
             <div className="flex flex-col gap-2 mb-4">

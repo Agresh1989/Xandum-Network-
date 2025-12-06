@@ -212,6 +212,7 @@ export const Leaderboard: React.FC = () => {
                         <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
                             <th className="px-4 sm:px-6 py-4 font-semibold w-16">Rank</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold">Validator</th>
+                            <th className="px-4 sm:px-6 py-4 font-semibold hidden md:table-cell">IP Address</th>
                             <th 
                                 className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
                                 onClick={() => handleSort('score')}
@@ -264,6 +265,11 @@ export const Leaderboard: React.FC = () => {
                                             <div className="text-xs text-slate-400 font-mono hidden md:block">{node.region}</div>
                                         </div>
                                     </div>
+                                </td>
+                                <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
+                                     <span className="font-mono text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                                        {node.ip}
+                                     </span>
                                 </td>
                                 <td className="px-4 sm:px-6 py-4">
                                     <div className="flex items-center gap-2">

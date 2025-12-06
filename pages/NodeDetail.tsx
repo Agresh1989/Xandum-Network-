@@ -32,6 +32,28 @@ export const NodeDetail: React.FC = () => {
     fetchData();
   }, [id]);
 
+  const handleExportHistory = () => {
+    if (!history.length || !node) return;
+
+    const headers = ['Timestamp', 'Uptime Percentage'];
+    const rows = history.map(h => [h.timestamp, h.value.toFixed(2)]);
+    
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(r => r.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `validator_${node.id}_history.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
         <div className="flex h-[60vh] items-center justify-center">
@@ -182,7 +204,16 @@ export const NodeDetail: React.FC = () => {
           {/* Main Info */}
           <div className="lg:col-span-2 space-y-6">
              <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-slate-800 mb-6">Uptime History (24h)</h3>
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-lg font-bold text-slate-800">Uptime History (24h)</h3>
+                    <button 
+                        onClick={handleExportHistory}
+                        disabled={history.length === 0}
+                        className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                    >
+                        <i className="fas fa-download"></i> Export CSV
+                    </button>
+                </div>
                 <UptimeChart data={history} />
              </div>
 
