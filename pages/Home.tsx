@@ -118,7 +118,7 @@ export const Home: React.FC = () => {
                 </h1>
                 
                 <p className="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-lg mx-auto lg:mx-0 font-light">
-                    The next evolution of blockchain infrastructure is here. Monitor pNodes, analyze storage metrics, and visualize network consensus with <span className="text-white font-semibold">Gemini 3.0 AI</span>.
+                    The next evolution of blockchain infrastructure is here. Monitor pNodes, analyze storage metrics, and visualize network consensus with <span className="text-white font-semibold">Gemini AI</span>.
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-5 pt-4 justify-center lg:justify-start">
@@ -271,7 +271,7 @@ export const Home: React.FC = () => {
                       </div>
                       <h3 className="text-2xl font-bold text-slate-900 mb-4">AI-Powered Insights</h3>
                       <p className="text-slate-500 leading-relaxed">
-                          Integrated Gemini 3 Pro reasoning engine analyzes network anomalies, generates natural language health reports, and predicts potential bottlenecks.
+                          Integrated Gemini reasoning engine analyzes network anomalies, generates natural language health reports, and predicts potential bottlenecks.
                       </p>
                   </div>
                   <div className="bg-slate-50 p-8 rounded-3xl border border-slate-100 hover:border-orange-200 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group">

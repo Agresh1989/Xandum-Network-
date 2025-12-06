@@ -73,7 +73,7 @@ export const Landing: React.FC = () => {
                   </div>
                   <h3 className="text-xl font-bold text-slate-800 mb-2">AI Intelligence</h3>
                   <p className="text-slate-500">
-                      Powered by Gemini 3 Pro with deep reasoning capabilities to analyze network health and anomaly detection.
+                      Powered by Gemini with deep reasoning capabilities to analyze network health and anomaly detection.
                   </p>
               </div>
               <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:shadow-md transition-shadow">

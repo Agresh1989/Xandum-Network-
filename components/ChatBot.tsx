@@ -119,7 +119,7 @@ export const ChatBot: React.FC = () => {
              </button>
           </div>
           <div className="text-[10px] text-center text-slate-400 mt-2">
-             Powered by Gemini 3.0 Pro Preview
+             Powered by Gemini Pro Preview
           </div>
         </form>
       </div>
