@@ -85,15 +85,17 @@ export const Home: React.FC = () => {
                 loop 
                 muted 
                 playsInline 
-                className="w-full h-full object-cover opacity-60"
-                poster="https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg" // Fallback image
+                className="w-full h-full object-cover opacity-30"
+                poster="https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
             >
                 {/* Abstract Network/Plexus Video */}
                 <source src="https://cdn.coverr.co/videos/coverr-digital-connections-background-5666/1080p.mp4" type="video/mp4" />
                 <source src="https://cdn.pixabay.com/video/2023/10/22/186175-877660601_large.mp4" type="video/mp4" />
             </video>
-            {/* Gradient Overlay for Readability */}
-            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/60 to-slate-950"></div>
+            {/* Radial Gradient Overlay for focus */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/80 to-slate-950"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#020617_100%)]"></div>
+            
             {/* Mesh/Grid Pattern Overlay */}
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
         </div>
@@ -101,7 +103,7 @@ export const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
             
             {/* Left Content */}
-            <div className="space-y-8 text-center lg:text-left animate-fade-in-up">
+            <div className="space-y-8 text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-[0_0_20px_rgba(14,165,233,0.15)] mx-auto lg:mx-0 hover:bg-white/10 transition-colors cursor-default">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -157,76 +159,63 @@ export const Home: React.FC = () => {
                 </div>
             </div>
 
-            {/* Right Content - 3D/Interactive Visual */}
-            <div className="relative mt-12 lg:mt-0 perspective-1000 group">
-                {/* Glowing Backdrop */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-tr from-cyan-500/30 to-purple-600/30 rounded-full blur-[100px] animate-pulse"></div>
+            {/* Right Content - Animated Picture / 3D Visual */}
+            <div className="relative mt-12 lg:mt-0 perspective-1000 group order-1 lg:order-2">
+                {/* Glowing Backdrop Pulse */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] lg:w-[500px] lg:h-[500px] bg-gradient-to-tr from-cyan-500/20 to-purple-600/20 rounded-full blur-[80px] lg:blur-[100px] animate-pulse-slow"></div>
                 
-                {/* 3D Card Container */}
-                <div className="relative w-full max-w-md mx-auto transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6 rotate-y-3 rotate-x-3 preserve-3d">
-                    {/* Main Glass Card */}
-                    <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-3xl p-6 shadow-2xl relative z-20 overflow-hidden">
-                        {/* Header */}
-                        <div className="flex justify-between items-center mb-6 border-b border-white/5 pb-4">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-xand-500 to-indigo-600 flex items-center justify-center shadow-lg">
-                                    <i className="fas fa-cube text-white"></i>
-                                </div>
-                                <div>
-                                    <div className="text-white font-bold text-sm">Block #24,192,501</div>
-                                    <div className="text-cyan-400 text-xs font-mono animate-pulse">● Confirmed</div>
-                                </div>
-                            </div>
-                            <div className="text-slate-400 text-xs font-mono">
-                                40ms ago
-                            </div>
+                {/* 3D Card Container with Animated Image */}
+                <div className="relative w-full max-w-sm lg:max-w-md mx-auto transform transition-transform duration-700 hover:rotate-y-6 hover:rotate-x-6 rotate-y-3 rotate-x-3 preserve-3d">
+                    
+                    {/* Main Image Card */}
+                    <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl z-20 bg-slate-900 animate-floating ring-1 ring-white/10">
+                        <img 
+                            src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2832&auto=format&fit=crop" 
+                            alt="Futuristic Blockchain Node" 
+                            className="w-full h-auto object-cover opacity-90 scale-105 group-hover:scale-110 transition-transform duration-[2000ms]"
+                        />
+                        
+                        {/* Overlay Gradient/Scanline */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/20"></div>
+                        <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none opacity-20"></div>
+
+                        {/* Floating UI Elements on top of image */}
+                        <div className="absolute top-4 right-4 z-20">
+                             <div className="px-3 py-1 bg-black/50 backdrop-blur-md border border-white/10 rounded-full flex items-center gap-2 shadow-[0_0_10px_rgba(0,255,100,0.2)]">
+                                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                                <span className="text-[10px] text-white font-mono uppercase tracking-wider">Live Data</span>
+                             </div>
                         </div>
 
-                        {/* Visualizer Mock */}
-                        <div className="h-48 bg-black/40 rounded-xl mb-6 relative overflow-hidden border border-white/5 group-hover:border-cyan-500/30 transition-colors">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                                <div className="w-full flex gap-1 items-end justify-center h-full pb-4 px-4">
-                                    {[...Array(20)].map((_,i) => (
-                                        <div key={i} className="flex-1 bg-gradient-to-t from-cyan-500 to-transparent opacity-60 rounded-t-sm" 
-                                             style={{
-                                                 height: `${20 + Math.random() * 80}%`,
-                                                 animation: `equalizer 1s infinite ${i * 0.05}s alternate`
-                                             }}>
-                                        </div>
-                                    ))}
+                        <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+                            <div className="bg-slate-900/80 backdrop-blur-xl border border-white/10 p-4 rounded-xl flex items-center justify-between shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-gradient-to-br from-xand-600 to-indigo-600 rounded-xl flex items-center justify-center text-white text-xl shadow-lg ring-1 ring-white/20">
+                                        <i className="fas fa-cube"></i>
+                                    </div>
+                                    <div>
+                                        <div className="text-white font-bold text-sm">Consensus Active</div>
+                                        <div className="text-cyan-400 text-xs font-mono">Block #24,192,501</div>
+                                    </div>
                                 </div>
-                            </div>
-                            {/* Overlay Text */}
-                            <div className="absolute top-2 left-3">
-                                <span className="text-[10px] font-bold text-cyan-300 uppercase tracking-wider bg-cyan-900/30 px-2 py-1 rounded">Consensus Active</span>
-                            </div>
-                        </div>
-
-                        {/* Feature Teaser */}
-                        <div className="bg-white/5 rounded-xl p-4 flex items-center justify-between group-hover:bg-white/10 transition-colors cursor-pointer" onClick={() => navigate('/animator')}>
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
-                                    <i className="fas fa-magic"></i>
+                                <div className="text-right hidden sm:block">
+                                    <div className="text-xs text-slate-400 uppercase tracking-wider">Validation</div>
+                                    <div className="text-green-400 font-bold text-sm flex items-center justify-end gap-1">
+                                        Confirmed <i className="fas fa-check-circle text-[10px]"></i>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div className="text-white font-bold text-sm">Neural Animator</div>
-                                    <div className="text-slate-400 text-xs">Generate videos from node data</div>
-                                </div>
-                            </div>
-                            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-xand-500 transition-colors">
-                                <i className="fas fa-arrow-right text-xs"></i>
                             </div>
                         </div>
                     </div>
 
-                    {/* Background Layer Card (Depth) */}
-                    <div className="absolute top-4 -right-4 w-full h-full bg-slate-800/40 backdrop-blur-md rounded-3xl -z-10 border border-white/5 transform translate-z-[-20px]"></div>
+                    {/* Decorative Background Layer Card (Depth) */}
+                    <div className="absolute top-6 -right-6 w-full h-full bg-slate-800/40 backdrop-blur-md rounded-3xl -z-10 border border-white/5 transform translate-z-[-20px] scale-90"></div>
                 </div>
             </div>
         </div>
         
         {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/30 animate-bounce">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/30 animate-bounce cursor-pointer hover:text-white transition-colors" onClick={() => document.getElementById('features')?.scrollIntoView({behavior: 'smooth'})}>
             <i className="fas fa-chevron-down text-2xl"></i>
         </div>
       </section>
@@ -453,9 +442,16 @@ export const Home: React.FC = () => {
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        @keyframes equalizer {
-            0% { height: 10%; }
-            100% { height: 90%; }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+            animation: pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
         .perspective-1000 {
             perspective: 1000px;

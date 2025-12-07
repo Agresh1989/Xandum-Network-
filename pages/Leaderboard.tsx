@@ -214,6 +214,7 @@ export const Leaderboard: React.FC = () => {
                         <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
                             <th className="px-4 sm:px-6 py-4 font-semibold w-16">Rank</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold">Validator</th>
+                            <th className="px-4 sm:px-6 py-4 font-semibold hidden md:table-cell">Region</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold hidden md:table-cell">IP Address</th>
                             <th 
                                 className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
@@ -262,10 +263,12 @@ export const Leaderboard: React.FC = () => {
                                         <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 border border-slate-200">
                                             {node.name?.substring(0, 2).toUpperCase()}
                                         </div>
-                                        <div>
-                                            <div className="font-semibold text-slate-800 text-sm group-hover:text-xand-600 transition-colors">{node.name}</div>
-                                            <div className="text-xs text-slate-400 font-mono hidden md:block">{node.region}</div>
-                                        </div>
+                                        <div className="font-semibold text-slate-800 text-sm group-hover:text-xand-600 transition-colors">{node.name}</div>
+                                    </div>
+                                </td>
+                                <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
+                                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                                        <i className="fas fa-globe text-slate-400"></i> {node.region}
                                     </div>
                                 </td>
                                 <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
