@@ -167,7 +167,7 @@ export const Dashboard: React.FC = () => {
               {analyzing ? (
                   <div className="flex flex-col items-center gap-2">
                      <i className="fas fa-circle-notch fa-spin text-xand-500"></i>
-                     <span className="text-slate-500 text-xs">Consulting Gemini...</span>
+                     <span className="text-slate-500 text-xs">Consulting AI...</span>
                   </div>
               ) : aiAnalysis ? (
                   <p className="text-slate-700 text-sm leading-relaxed">{aiAnalysis}</p>
