@@ -83,6 +83,8 @@ export interface ValidatorGrade {
       uptimeScore: number;
       latencyScore: number;
       consistencyScore: number;
+      voteDistanceScore: number;
+      participationScore: number;
   }
 }
 

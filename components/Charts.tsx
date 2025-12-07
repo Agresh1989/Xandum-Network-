@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -145,8 +146,8 @@ export const ReportRadarChart: React.FC<{ metrics: any }> = ({ metrics }) => {
     { subject: 'Uptime', A: metrics.uptimeScore, fullMark: 100 },
     { subject: 'Latency', A: metrics.latencyScore, fullMark: 100 },
     { subject: 'Consistency', A: metrics.consistencyScore, fullMark: 100 },
-    { subject: 'Vote Dist', A: 85, fullMark: 100 }, 
-    { subject: 'Participation', A: 90, fullMark: 100 },
+    { subject: 'Vote Dist', A: metrics.voteDistanceScore || 85, fullMark: 100 }, 
+    { subject: 'Participation', A: metrics.participationScore || 90, fullMark: 100 },
   ];
 
   return (

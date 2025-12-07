@@ -305,16 +305,27 @@ export const pNodeService = {
         
         // 2. Simulate Node Count Fluctuation (To trigger "Active Nodes" animation in UI)
         let activeNodes = MOCK_STATS.active_nodes;
-        // 20% chance to change active node count
-        if (Math.random() > 0.8) {
+        let totalNodes = MOCK_STATS.total_nodes;
+
+        // 40% chance to change active node count (Increased for demo visibility)
+        if (Math.random() > 0.6) {
             const change = Math.random() > 0.5 ? 1 : -1;
-            activeNodes = Math.max(10, Math.min(MOCK_STATS.total_nodes, activeNodes + change));
+            activeNodes = Math.max(10, Math.min(totalNodes, activeNodes + change));
+        }
+
+        // 10% chance to change total nodes (New validators joining/leaving)
+        if (Math.random() > 0.9) {
+             const change = Math.random() > 0.5 ? 1 : -1;
+             totalNodes = Math.max(100, totalNodes + change);
+             // Keep active consistent with total
+             if (activeNodes > totalNodes) activeNodes = totalNodes;
         }
 
         MOCK_STATS = {
             ...MOCK_STATS,
             tps: newTps,
             active_nodes: activeNodes,
+            total_nodes: totalNodes,
             last_updated: new Date().toISOString(),
             // Simulate slow epoch progression
             current_epoch: Math.random() > 0.98 ? MOCK_STATS.current_epoch + 1 : MOCK_STATS.current_epoch
@@ -435,7 +446,12 @@ export const pNodeService = {
               uptimeScore: Math.floor(node.uptime_percentage),
               // Convert latency to a 0-100 scale for consistency in UI progress bars
               latencyScore: Math.floor((1000 - Math.min(node.latency_ms, 1000)) / 10),
-              consistencyScore: 90 // Mocked for now, assumes good block production
+              // Dynamic Consistency based on uptime jitter
+              consistencyScore: Math.min(100, Math.floor(node.uptime_percentage * 0.9 + 5 + Math.random() * 5)),
+              // Vote distance inverse to latency
+              voteDistanceScore: Math.max(0, 100 - Math.floor(node.latency_ms / 10)),
+              // Participation based on status
+              participationScore: node.status === NodeStatus.ACTIVE ? 100 : node.status === NodeStatus.DELINQUENT ? 20 : 60
           }
       };
   },
@@ -465,8 +481,14 @@ export const pNodeService = {
     }
 
     try {
-        // Fetch fresh stats for context
-        const stats = await pNodeService.getNetworkStats();
+        // Fetch fresh stats AND nodes for deeper context (e.g. Nakamoto Coefficient)
+        const [stats, nodes] = await Promise.all([
+             pNodeService.getNetworkStats(),
+             pNodeService.getAllNodes()
+        ]);
+        
+        // Calculate decentralization metric on the fly for the bot
+        const nakamoto = pNodeService.calculateNakamotoCoefficient(nodes);
         
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         const model = 'gemini-3-pro-preview';
@@ -481,6 +503,7 @@ export const pNodeService = {
         - Current Epoch: ${stats.current_epoch}
         - Average Uptime: ${stats.average_uptime.toFixed(2)}%
         - Last Updated: ${stats.last_updated}
+        - Nakamoto Coefficient: ${nakamoto} (Decentralization Score)
         `;
 
         const systemInstruction = `You are "XandBot", an intelligent assistant for the Xandeum Network Analytics Dashboard. 
@@ -512,5 +535,60 @@ export const pNodeService = {
         console.error("Chat Error", error);
         return "I apologize, but I'm having trouble connecting to the network intelligence at the moment. Please try again later.";
     }
+  },
+
+  animateImageWithVeo: async (file: File): Promise<string> => {
+      if (!process.env.API_KEY) {
+          throw new Error("API Key is missing. Cannot animate image.");
+      }
+
+      // Convert file to base64
+      const base64Image = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = error => reject(error);
+      });
+      // remove data prefix
+      const base64Data = base64Image.split(',')[1];
+      const mimeType = file.type;
+
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      // Veo 3.1 Fast for generation
+      const model = 'veo-3.1-fast-generate-preview';
+
+      try {
+        let operation = await ai.models.generateVideos({
+            model: model,
+            prompt: "Cinematic, futuristic, glowing blockchain nodes, 4k resolution, seamless loop", 
+            image: {
+                imageBytes: base64Data,
+                mimeType: mimeType
+            },
+            config: {
+                numberOfVideos: 1,
+                resolution: '720p',
+                aspectRatio: '16:9'
+            }
+        });
+
+        // Polling
+        while (!operation.done) {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+            operation = await ai.operations.getVideosOperation({operation: operation});
+        }
+
+        const downloadLink = operation.response?.generatedVideos?.[0]?.video?.uri;
+        if (!downloadLink) throw new Error("Video generation failed: No URI returned.");
+
+        // Fetch the bytes with key
+        const response = await fetch(`${downloadLink}&key=${process.env.API_KEY}`);
+        const blob = await response.blob();
+        return URL.createObjectURL(blob);
+
+      } catch (e: any) {
+          console.error("Veo Animation Error", e);
+          throw new Error(e.message || "Failed to animate image.");
+      }
   }
 };

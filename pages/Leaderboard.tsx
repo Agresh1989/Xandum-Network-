@@ -67,6 +67,24 @@ export const Leaderboard: React.FC = () => {
     return [...nodes].sort((a, b) => b.gradeInfo.score - a.gradeInfo.score).slice(0, 3);
   }, [nodes]);
 
+  // Helper to render the new sort indicator
+  const renderSortIndicator = (field: typeof sortField) => {
+      const isActive = sortField === field;
+      return (
+          <div className="flex flex-col ml-2 space-y-[2px]">
+              <i className={`fas fa-caret-up text-[10px] leading-none ${isActive && sortDirection === 'asc' ? 'text-xand-600' : 'text-slate-300 group-hover:text-slate-400'}`}></i>
+              <i className={`fas fa-caret-down text-[10px] leading-none ${isActive && sortDirection === 'desc' ? 'text-xand-600' : 'text-slate-300 group-hover:text-slate-400'}`}></i>
+          </div>
+      );
+  };
+
+  const getHeaderClass = (field: typeof sortField, alignRight = false) => {
+      const isActive = sortField === field;
+      return `px-4 sm:px-6 py-4 font-semibold cursor-pointer transition-colors group select-none ${
+          isActive ? 'bg-slate-50 text-xand-700' : 'hover:bg-slate-50 hover:text-slate-800 text-slate-500'
+      } ${alignRight ? 'text-right' : ''}`;
+  };
+
   if (loading) {
     return (
         <div className="flex h-[60vh] items-center justify-center">
@@ -211,45 +229,37 @@ export const Leaderboard: React.FC = () => {
             <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left min-w-[700px]">
                     <thead>
-                        <tr className="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                        <tr className="bg-white border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                             <th className="px-4 sm:px-6 py-4 font-semibold w-16">Rank</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold">Validator</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold hidden md:table-cell">Region</th>
                             <th className="px-4 sm:px-6 py-4 font-semibold hidden md:table-cell">IP Address</th>
-                            <th 
-                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
-                                onClick={() => handleSort('score')}
-                            >
-                                <div className="flex items-center gap-1">
+                            
+                            <th className={getHeaderClass('score')} onClick={() => handleSort('score')}>
+                                <div className="flex items-center">
                                     Overall Score
-                                    {sortField === 'score' && <i className={`fas fa-sort-${sortDirection === 'asc' ? 'up' : 'down'}`}></i>}
+                                    {renderSortIndicator('score')}
                                 </div>
                             </th>
-                            <th 
-                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
-                                onClick={() => handleSort('uptime_percentage')}
-                            >
-                                <div className="flex items-center gap-1">
+                            
+                            <th className={getHeaderClass('uptime_percentage')} onClick={() => handleSort('uptime_percentage')}>
+                                <div className="flex items-center">
                                     Uptime
-                                    {sortField === 'uptime_percentage' && <i className={`fas fa-sort-${sortDirection === 'asc' ? 'up' : 'down'}`}></i>}
+                                    {renderSortIndicator('uptime_percentage')}
                                 </div>
                             </th>
-                            <th 
-                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors"
-                                onClick={() => handleSort('stake_weight')}
-                            >
-                                <div className="flex items-center gap-1">
+                            
+                            <th className={getHeaderClass('stake_weight')} onClick={() => handleSort('stake_weight')}>
+                                <div className="flex items-center">
                                     Stake Weight
-                                    {sortField === 'stake_weight' && <i className={`fas fa-sort-${sortDirection === 'asc' ? 'up' : 'down'}`}></i>}
+                                    {renderSortIndicator('stake_weight')}
                                 </div>
                             </th>
-                            <th 
-                                className="px-4 sm:px-6 py-4 font-semibold cursor-pointer hover:text-xand-600 transition-colors text-right"
-                                onClick={() => handleSort('latency_ms')}
-                            >
-                                <div className="flex items-center justify-end gap-1">
+                            
+                            <th className={getHeaderClass('latency_ms', true)} onClick={() => handleSort('latency_ms')}>
+                                <div className="flex items-center justify-end">
                                     Latency
-                                    {sortField === 'latency_ms' && <i className={`fas fa-sort-${sortDirection === 'asc' ? 'up' : 'down'}`}></i>}
+                                    {renderSortIndicator('latency_ms')}
                                 </div>
                             </th>
                         </tr>
@@ -321,9 +331,16 @@ export const Leaderboard: React.FC = () => {
                                 <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 border border-slate-200">
                                     {node.name?.substring(0, 2).toUpperCase()}
                                 </div>
-                                <div>
-                                    <div className="font-semibold text-slate-800 text-sm">{node.name}</div>
-                                    <div className="text-xs text-slate-400 font-mono">{node.region}</div>
+                                <div className="min-w-0">
+                                    <div className="font-semibold text-slate-800 text-sm truncate">{node.name}</div>
+                                    <div className="text-xs text-slate-500 mt-0.5 flex flex-wrap items-center gap-x-2">
+                                        <span className="flex items-center gap-1 text-slate-500">
+                                            <i className="fas fa-globe text-slate-300 text-[10px]"></i>
+                                            {node.region}
+                                        </span>
+                                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                        <span className="font-mono text-slate-600 bg-slate-50 px-1.5 rounded border border-slate-100 text-[10px] sm:text-xs">{node.ip}</span>
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end">
@@ -347,10 +364,10 @@ export const Leaderboard: React.FC = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-2 text-xs">
-                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Uptime</span>
+                             <div className="bg-slate-50 p-2 rounded border border-slate-100 col-span-2">
+                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Uptime Performance</span>
                                 <div className="flex items-center gap-2">
-                                     <div className="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                     <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                                         <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
                                      </div>
                                      <span className="font-bold text-slate-700">{node.uptime_percentage.toFixed(1)}%</span>
@@ -363,10 +380,6 @@ export const Leaderboard: React.FC = () => {
                              <div className="bg-slate-50 p-2 rounded border border-slate-100">
                                 <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Latency</span>
                                 <span className="font-mono font-bold text-slate-700">{node.latency_ms}ms</span>
-                             </div>
-                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
-                                 <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">IP</span>
-                                 <span className="font-mono font-bold text-slate-700 truncate block">{node.ip}</span>
                              </div>
                         </div>
                     </div>

@@ -51,7 +51,7 @@ export const ChatBot: React.FC = () => {
     <div className="fixed bottom-6 right-6 z-50 print:hidden flex flex-col items-end pointer-events-none">
       
       {/* Chat Window */}
-      <div className={`pointer-events-auto bg-white rounded-2xl shadow-2xl border border-slate-200 w-80 sm:w-96 flex flex-col transition-all duration-300 origin-bottom-right overflow-hidden mb-4 ${isOpen ? 'scale-100 opacity-100 h-[500px]' : 'scale-90 opacity-0 h-0'}`}>
+      <div className={`pointer-events-auto bg-white rounded-2xl shadow-2xl border border-slate-200 w-80 sm:w-96 max-w-[calc(100vw-3rem)] flex flex-col transition-all duration-300 origin-bottom-right overflow-hidden mb-4 ${isOpen ? 'scale-100 opacity-100 h-[500px]' : 'scale-90 opacity-0 h-0'}`}>
         
         {/* Header */}
         <div className="bg-slate-900 text-white p-4 flex justify-between items-center shrink-0">

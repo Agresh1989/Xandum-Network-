@@ -77,209 +77,294 @@ export const NodeDetail: React.FC = () => {
   const grade: ValidatorGrade = pNodeService.getValidatorGrade(node);
 
   return (
-    <div className="space-y-4 sm:space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in max-w-7xl mx-auto">
       {/* Breadcrumb / Header */}
-      <div className="flex items-center gap-2 text-sm text-slate-500 mb-2 sm:mb-4 px-1">
+      <div className="flex items-center gap-2 text-sm text-slate-500 mb-2 px-1 no-print">
         <Link to="/dashboard" className="hover:text-xand-600 transition-colors">Dashboard</Link>
         <i className="fas fa-chevron-right text-xs text-slate-300"></i>
         <span className="text-slate-800 font-medium truncate">Validator Details</span>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 lg:p-8 shadow-sm">
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full lg:w-auto">
-                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center text-2xl font-bold text-slate-600 border-2 border-slate-200 shrink-0">
+      {/* Identity Card */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
+            <i className="fas fa-server text-9xl text-slate-300 transform rotate-12"></i>
+        </div>
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5 w-full lg:w-auto">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-3xl font-bold text-slate-600 border border-slate-300 shadow-inner shrink-0">
                     {node.name?.substring(0, 2).toUpperCase() || 'ID'}
                 </div>
                 <div className="min-w-0 flex-1">
-                    <h1 className="text-xl sm:text-2xl font-bold text-slate-900 mb-1 truncate">{node.name || 'Unknown Validator'}</h1>
-                    <div className="flex items-center gap-2">
-                        <code className="px-2 py-0.5 bg-slate-50 rounded border border-slate-200 text-xs text-slate-500 font-mono truncate max-w-[200px] sm:max-w-none">
-                            {node.id}
-                        </code>
-                        <button className="text-slate-400 hover:text-slate-600 p-1" title="Copy ID">
-                            <i className="far fa-copy"></i>
-                        </button>
+                    <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-2 truncate tracking-tight">{node.name || 'Unknown Validator'}</h1>
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="flex items-center gap-2 bg-slate-100 rounded-lg px-3 py-1.5 border border-slate-200 group cursor-pointer hover:bg-slate-200 transition-colors" title="Copy ID">
+                            <i className="fas fa-fingerprint text-slate-400"></i>
+                            <code className="text-xs text-slate-600 font-mono truncate max-w-[150px] sm:max-w-[240px]">
+                                {node.id}
+                            </code>
+                            <i className="far fa-copy text-slate-400 text-xs group-hover:text-slate-600"></i>
+                        </div>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide border
+                            ${node.status === NodeStatus.ACTIVE ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                            {node.status === NodeStatus.ACTIVE && <span className="w-2 h-2 rounded-full bg-green-500 mr-2 animate-pulse"></span>}
+                            {node.status}
+                        </span>
                     </div>
                 </div>
             </div>
             
-            <div className="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
-                <div className={`px-4 py-2 rounded-lg border flex flex-col items-center justify-center flex-1 sm:flex-none min-w-[100px]
-                    ${node.status === NodeStatus.ACTIVE ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                    <span className="text-xs uppercase text-slate-500 font-bold mb-1">Status</span>
-                    <span className={`text-sm font-bold ${node.status === NodeStatus.ACTIVE ? 'text-green-600' : 'text-red-600'}`}>
-                        {node.status}
-                    </span>
+            <div className="flex gap-4 w-full lg:w-auto border-t lg:border-t-0 border-slate-100 pt-4 lg:pt-0">
+                <div className="text-center px-4">
+                    <div className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Version</div>
+                    <div className="text-lg font-bold text-slate-800">{node.version}</div>
                 </div>
-                <div className="px-4 py-2 rounded-lg bg-white border border-slate-200 flex flex-col items-center justify-center flex-1 sm:flex-none min-w-[100px] shadow-sm">
-                    <span className="text-xs uppercase text-slate-400 font-bold mb-1">Version</span>
-                    <span className="text-sm font-bold text-slate-800">{node.version}</span>
-                </div>
-                <div className="px-4 py-2 rounded-lg bg-white border border-slate-200 flex flex-col items-center justify-center flex-1 sm:flex-none min-w-[100px] shadow-sm">
-                    <span className="text-xs uppercase text-slate-400 font-bold mb-1">Vote Latency</span>
-                    <span className="text-sm font-bold text-slate-800">{node.latency_ms} ms</span>
+                <div className="w-px bg-slate-200 h-10 self-center hidden sm:block"></div>
+                <div className="text-center px-4">
+                    <div className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">Latency</div>
+                    <div className="text-lg font-bold text-slate-800">{node.latency_ms} <span className="text-xs text-slate-500 font-normal">ms</span></div>
                 </div>
             </div>
         </div>
       </div>
 
-      {/* Validator Health Report Section with Grade Calculation */}
-      <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
-           <h3 className="text-lg font-bold text-slate-800">Validator Health Report</h3>
+      {/* Validator Health Report Section */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+           <div className="flex items-center gap-3">
+               <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg">
+                   <i className="fas fa-heartbeat"></i>
+               </div>
+               <h3 className="text-xl font-bold text-slate-800">Health & Grading</h3>
+           </div>
            <button 
-             className="text-sm text-xand-600 hover:text-xand-700 font-medium flex items-center gap-2 px-3 py-1.5 bg-xand-50 rounded-lg hover:bg-xand-100 transition-colors w-full sm:w-auto justify-center" 
+             className="text-sm text-slate-600 hover:text-xand-600 font-medium flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg hover:border-xand-200 transition-all shadow-sm w-full sm:w-auto justify-center print:hidden no-print" 
              onClick={() => window.print()}
            >
               <i className="fas fa-print"></i> Print Report
            </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
            {/* Grade Column */}
-           <div className="flex flex-col items-center justify-center p-6 bg-slate-50 rounded-xl border border-slate-100 relative order-1">
-              <div className={`text-6xl font-black mb-2 ${
+           <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-2xl border border-slate-100 relative h-full">
+              <div className="absolute top-4 left-4 text-xs font-bold text-slate-400 uppercase">Overall Grade</div>
+              <div className={`text-7xl font-black mb-1 drop-shadow-sm ${
                   grade.grade.startsWith('A') ? 'text-green-500' : 
                   grade.grade.startsWith('B') ? 'text-blue-500' : 
                   grade.grade.startsWith('C') ? 'text-yellow-500' : 'text-red-500'
               }`}>
                   {grade.grade}
               </div>
-              <div className="text-sm text-slate-500 uppercase tracking-wide font-semibold">Overall Grade</div>
-              <div className="mt-4 text-center">
-                  <span className="text-2xl font-bold text-slate-800">{grade.score}</span>
-                  <span className="text-slate-400 text-sm"> / 100</span>
+              <div className="mt-2 text-center bg-white px-4 py-1 rounded-full border border-slate-200 shadow-sm">
+                  <span className="text-slate-500 text-xs font-bold uppercase mr-2">Score</span>
+                  <span className="text-xl font-bold text-slate-800">{grade.score}</span>
+                  <span className="text-slate-400 text-xs"> / 100</span>
               </div>
            </div>
            
            {/* Metrics Chart */}
-           <div className="flex items-center justify-center min-h-[200px] order-2">
+           <div className="flex items-center justify-center h-[240px]">
                <ReportRadarChart metrics={grade.metrics} />
            </div>
 
-           {/* Detailed Information Column -> Scoring Breakdown */}
-           <div className="space-y-5 flex flex-col justify-center order-3">
-              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Performance Breakdown</h4>
+           {/* Detailed Information Column */}
+           <div className="space-y-6">
+              <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-2">Metric Breakdown</h4>
               
-              <div>
-                 <div className="flex justify-between items-end mb-1">
-                     <span className="text-slate-700 font-medium text-sm">Uptime Reliability</span>
-                     <span className="text-slate-900 font-bold text-sm">{grade.metrics.uptimeScore}/100</span>
-                 </div>
-                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-xand-500 rounded-full" style={{ width: `${grade.metrics.uptimeScore}%` }}></div>
-                 </div>
+              <div className="space-y-4">
+                  <div className="group">
+                     <div className="flex justify-between items-center mb-1.5">
+                         <span className="text-slate-700 font-medium text-sm flex items-center gap-2">
+                             <i className="fas fa-server text-xand-500 text-xs"></i> Uptime Reliability
+                         </span>
+                         <span className="text-slate-900 font-bold text-sm bg-slate-50 px-2 rounded">{grade.metrics.uptimeScore}/100</span>
+                     </div>
+                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-xand-500 rounded-full transition-all duration-1000" style={{ width: `${grade.metrics.uptimeScore}%` }}></div>
+                     </div>
+                  </div>
+
+                  <div className="group">
+                     <div className="flex justify-between items-center mb-1.5">
+                         <span className="text-slate-700 font-medium text-sm flex items-center gap-2">
+                             <i className="fas fa-bolt text-indigo-500 text-xs"></i> Vote Latency
+                         </span>
+                         <span className="text-slate-900 font-bold text-sm bg-slate-50 px-2 rounded">{grade.metrics.latencyScore}/100</span>
+                     </div>
+                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-indigo-500 rounded-full transition-all duration-1000" style={{ width: `${grade.metrics.latencyScore}%` }}></div>
+                     </div>
+                  </div>
+
+                  <div className="group">
+                     <div className="flex justify-between items-center mb-1.5">
+                         <span className="text-slate-700 font-medium text-sm flex items-center gap-2">
+                             <i className="fas fa-cubes text-emerald-500 text-xs"></i> Block Consistency
+                         </span>
+                         <span className="text-slate-900 font-bold text-sm bg-slate-50 px-2 rounded">{grade.metrics.consistencyScore}/100</span>
+                     </div>
+                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                         <div className="h-full bg-emerald-500 rounded-full transition-all duration-1000" style={{ width: `${grade.metrics.consistencyScore}%` }}></div>
+                     </div>
+                  </div>
               </div>
 
-              <div>
-                 <div className="flex justify-between items-end mb-1">
-                     <span className="text-slate-700 font-medium text-sm">Vote Latency</span>
-                     <span className="text-slate-900 font-bold text-sm">{grade.metrics.latencyScore}/100</span>
-                 </div>
-                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${grade.metrics.latencyScore}%` }}></div>
-                 </div>
-              </div>
-
-              <div>
-                 <div className="flex justify-between items-end mb-1">
-                     <span className="text-slate-700 font-medium text-sm">Block Consistency</span>
-                     <span className="text-slate-900 font-bold text-sm">{grade.metrics.consistencyScore}/100</span>
-                 </div>
-                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                     <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${grade.metrics.consistencyScore}%` }}></div>
-                 </div>
-              </div>
-
-              <div className="pt-2">
-                 <div className="text-xs text-slate-400 bg-slate-50 p-2 rounded border border-slate-100">
-                    Grade is calculated based on weighted average of the above metrics over the last 1000 slots.
-                 </div>
+              <div className="pt-2 text-[10px] text-slate-400 leading-snug">
+                  * Metrics are weighted averages calculated over the last 1000 slots from the current epoch.
               </div>
            </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Info */}
+          {/* Left Column: Stats & History */}
           <div className="lg:col-span-2 space-y-6">
-             <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
+             {/* Uptime History Card */}
+             <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
                 <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold text-slate-800">Uptime History (24h)</h3>
+                    <div className="flex items-center gap-3">
+                         <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg">
+                             <i className="fas fa-chart-area"></i>
+                         </div>
+                         <h3 className="text-lg font-bold text-slate-800">24-Hour Uptime</h3>
+                    </div>
                     <button 
                         onClick={handleExportHistory}
                         disabled={history.length === 0}
-                        className="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
+                        className="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 hover:bg-slate-100 px-4 py-2 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50 print:hidden no-print"
                     >
-                        <i className="fas fa-download"></i> Export CSV
+                        <i className="fas fa-download"></i> <span className="hidden sm:inline">Export CSV</span>
                     </button>
                 </div>
                 <UptimeChart data={history} />
              </div>
 
-             <div className="bg-white border border-slate-200 rounded-xl p-4 sm:p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-slate-800 mb-4">Technical Details</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-xs text-slate-500 uppercase block mb-1">Network Address (Gossip)</span>
-                        <div className="font-mono text-slate-800 break-all">{node.ip}</div>
-                    </div>
-                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-xs text-slate-500 uppercase block mb-1">Software Implementation</span>
-                        <div className="text-slate-800">{node.software_version}</div>
-                    </div>
-                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-xs text-slate-500 uppercase block mb-1">Data Center Region</span>
-                        <div className="text-slate-800 flex items-center gap-2">
-                            {ICONS.Globe} {node.region}
+             {/* Technical Specifications Card - Refactored */}
+             <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-center">
+                    <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i className="fas fa-cogs text-slate-400 text-sm"></i> Validator Specifications
+                    </h3>
+                </div>
+                <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shrink-0">
+                            <i className="fas fa-network-wired"></i>
+                        </div>
+                        <div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Network Address</span>
+                            <div className="font-mono text-sm text-slate-700 font-medium bg-slate-50 px-2 py-1 rounded border border-slate-100 inline-block mb-1">
+                                {node.ip}
+                            </div>
+                            <div className="text-xs text-slate-400">Gossip Port: 8001</div>
                         </div>
                     </div>
-                     <div className="p-4 bg-slate-50 rounded-lg border border-slate-100">
-                        <span className="text-xs text-slate-500 uppercase block mb-1">First Seen</span>
-                        <div className="text-slate-800">{new Date(node.joined_at).toLocaleDateString()}</div>
+
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl shrink-0">
+                            <i className="fas fa-code-branch"></i>
+                        </div>
+                        <div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Software Version</span>
+                            <div className="text-sm text-slate-900 font-bold">{node.software_version}</div>
+                            <div className="text-xs text-slate-500 mt-0.5">Protocol Feature Set v{node.version}</div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center text-xl shrink-0">
+                            <i className="fas fa-globe-americas"></i>
+                        </div>
+                        <div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Data Center</span>
+                            <div className="text-sm text-slate-900 font-bold flex items-center gap-1">
+                                {ICONS.Globe} {node.region}
+                            </div>
+                            <div className="text-xs text-slate-500 mt-0.5">Timezone: UTC {new Date().getTimezoneOffset() / -60 > 0 ? '+' : ''}{new Date().getTimezoneOffset() / -60}</div>
+                        </div>
+                    </div>
+
+                    <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl shrink-0">
+                            <i className="fas fa-calendar-alt"></i>
+                        </div>
+                        <div>
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Active Since</span>
+                            <div className="text-sm text-slate-900 font-bold">{new Date(node.joined_at).toLocaleDateString()}</div>
+                            <div className="text-xs text-slate-500 mt-0.5">Duration: {Math.floor((Date.now() - new Date(node.joined_at).getTime()) / (1000 * 60 * 60 * 24))} Days</div>
+                        </div>
                     </div>
                 </div>
              </div>
           </div>
 
-          {/* Sidebar Info */}
+          {/* Right Column: Score & Logs */}
           <div className="space-y-6">
-             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <h3 className="text-lg font-bold text-slate-800 mb-4">Performance Score</h3>
-                <div className="flex items-center justify-center py-6 relative">
-                     <svg className="w-32 h-32 transform -rotate-90">
-                        <circle cx="64" cy="64" r="60" stroke="#f1f5f9" strokeWidth="8" fill="none" />
-                        <circle cx="64" cy="64" r="60" stroke="#0ea5e9" strokeWidth="8" fill="none" strokeDasharray={377} strokeDashoffset={377 - (377 * node.uptime_percentage) / 100} />
+             {/* Performance Score Card */}
+             <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i className="fas fa-tachometer-alt text-slate-400 text-sm"></i> Reliability Score
+                </h3>
+                <div className="flex items-center justify-center py-4 relative mb-6">
+                     <svg className="w-40 h-40 transform -rotate-90">
+                        <circle cx="80" cy="80" r="70" stroke="#f1f5f9" strokeWidth="10" fill="none" />
+                        <circle cx="80" cy="80" r="70" stroke="#0ea5e9" strokeWidth="10" fill="none" strokeDasharray={440} strokeDashoffset={440 - (440 * node.uptime_percentage) / 100} className="transition-all duration-1000 ease-out" />
                      </svg>
                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-3xl font-bold text-slate-800">{Math.floor(node.uptime_percentage)}</span>
-                        <span className="text-xs text-slate-500">SCORE</span>
+                        <span className="text-4xl font-black text-slate-800">{Math.floor(node.uptime_percentage)}</span>
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">POINTS</span>
                      </div>
                 </div>
-                <div className="mt-4 space-y-3">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Skip Rate</span>
-                        <span className="text-slate-800 font-mono">{(100 - node.uptime_percentage).toFixed(2)}%</span>
+                <div className="space-y-3">
+                    <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="text-sm text-slate-500 font-medium">Skip Rate</span>
+                        <span className="text-slate-900 font-mono font-bold">{(100 - node.uptime_percentage).toFixed(2)}%</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Vote Distance</span>
-                        <span className="text-slate-800 font-mono">1</span>
+                    <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="text-sm text-slate-500 font-medium">Vote Distance</span>
+                        <span className="text-slate-900 font-mono font-bold">1 Slot</span>
                     </div>
-                     <div className="flex justify-between text-sm">
-                        <span className="text-slate-500">Credits Earned</span>
-                        <span className="text-slate-800 font-mono">245,123</span>
+                     <div className="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <span className="text-sm text-slate-500 font-medium">Credits Earned</span>
+                        <span className="text-slate-900 font-mono font-bold">245,123</span>
                     </div>
                 </div>
              </div>
 
-             <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 shadow-inner">
-                 <h3 className="text-sm font-bold text-slate-600 uppercase mb-2">Technical Logs (Simulated)</h3>
-                 <div className="font-mono text-xs text-slate-500 space-y-2 h-48 overflow-y-auto pr-2 custom-scrollbar">
-                     <p><span className="text-slate-400">[10:00:21]</span> Gossip active, peers: {node.gossip_peers}</p>
-                     <p><span className="text-slate-400">[10:00:15]</span> Voted on slot {node.last_vote_slot}</p>
-                     <p><span className="text-slate-400">[09:59:58]</span> Snapshot loaded</p>
-                     <p><span className="text-slate-400">[09:59:45]</span> <span className="text-green-600">Sync complete</span></p>
-                     <p><span className="text-slate-400">[09:55:12]</span> Connecting to cluster...</p>
+             {/* Logs Card */}
+             <div className="bg-slate-900 text-slate-300 rounded-2xl p-6 shadow-lg border border-slate-800">
+                 <div className="flex justify-between items-center mb-4">
+                     <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                         <i className="fas fa-terminal text-green-400"></i> Node Logs
+                     </h3>
+                     <span className="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400">Live</span>
+                 </div>
+                 <div className="font-mono text-xs space-y-3 h-64 overflow-y-auto pr-2 custom-scrollbar opacity-90">
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[10:00:21]</span> 
+                         <span className="text-slate-300">Gossip active, peers: {node.gossip_peers}</span>
+                     </div>
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[10:00:15]</span> 
+                         <span className="text-slate-300">Voted on slot <span className="text-blue-400">{node.last_vote_slot}</span></span>
+                     </div>
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[09:59:58]</span> 
+                         <span className="text-slate-300">Snapshot loaded successfully</span>
+                     </div>
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[09:59:45]</span> 
+                         <span className="text-green-400 font-bold">Sync complete</span>
+                     </div>
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[09:55:12]</span> 
+                         <span className="text-slate-300">Connecting to cluster entrypoint...</span>
+                     </div>
+                     <div className="flex gap-2">
+                         <span className="text-slate-500">[09:55:10]</span> 
+                         <span className="text-yellow-400">WARN: High latency detected on port 8001</span>
+                     </div>
                  </div>
              </div>
           </div>

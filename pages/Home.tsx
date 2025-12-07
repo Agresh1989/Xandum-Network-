@@ -76,40 +76,39 @@ export const Home: React.FC = () => {
       </nav>
 
       {/* STRONG HERO SECTION with Video Background */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20 pb-20 overflow-hidden bg-slate-950">
+      <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden bg-slate-950">
         
         {/* Video Background */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 overflow-hidden">
             <video 
                 autoPlay 
                 loop 
                 muted 
                 playsInline 
-                className="w-full h-full object-cover opacity-30"
-                poster="https://cdn.pixabay.com/photo/2016/11/29/05/45/astronomy-1867616_1280.jpg"
+                className="absolute w-full h-full object-cover opacity-20"
+                style={{ filter: 'hue-rotate(200deg) contrast(1.1) brightness(0.8)' }}
             >
                 {/* Abstract Network/Plexus Video */}
                 <source src="https://cdn.coverr.co/videos/coverr-digital-connections-background-5666/1080p.mp4" type="video/mp4" />
-                <source src="https://cdn.pixabay.com/video/2023/10/22/186175-877660601_large.mp4" type="video/mp4" />
             </video>
             {/* Radial Gradient Overlay for focus */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/80 to-slate-950"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-900/90 to-slate-950"></div>
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_#020617_100%)]"></div>
             
             {/* Mesh/Grid Pattern Overlay */}
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center relative z-10">
             
             {/* Left Content */}
             <div className="space-y-8 text-center lg:text-left animate-fade-in-up order-2 lg:order-1">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-[0_0_20px_rgba(14,165,233,0.15)] mx-auto lg:mx-0 hover:bg-white/10 transition-colors cursor-default">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 backdrop-blur-md rounded-full shadow-[0_0_20px_rgba(14,165,233,0.15)] mx-auto lg:mx-0 hover:bg-white/10 transition-colors cursor-default group">
                     <span className="relative flex h-2.5 w-2.5">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                     </span>
-                    <span className="text-xs font-bold text-green-300 uppercase tracking-widest">Mainnet Beta Live</span>
+                    <span className="text-xs font-bold text-green-300 uppercase tracking-widest group-hover:text-green-200 transition-colors">Mainnet Beta Live</span>
                 </div>
                 
                 <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-white tracking-tighter leading-[1.1] drop-shadow-2xl">
@@ -142,18 +141,18 @@ export const Home: React.FC = () => {
                 </div>
 
                 <div className="pt-8 flex items-center justify-center lg:justify-start gap-8 text-slate-500 text-sm font-medium">
-                    <div className="flex flex-col items-center lg:items-start">
-                        <span className="text-white text-2xl font-bold">12PB+</span>
+                    <div className="flex flex-col items-center lg:items-start group cursor-default">
+                        <span className="text-white text-2xl font-bold group-hover:text-xand-400 transition-colors">12PB+</span>
                         <span className="uppercase tracking-wider text-xs">Storage</span>
                     </div>
                     <div className="w-px h-8 bg-white/10"></div>
-                    <div className="flex flex-col items-center lg:items-start">
-                        <span className="text-white text-2xl font-bold">120+</span>
+                    <div className="flex flex-col items-center lg:items-start group cursor-default">
+                        <span className="text-white text-2xl font-bold group-hover:text-xand-400 transition-colors">120+</span>
                         <span className="uppercase tracking-wider text-xs">Nodes</span>
                     </div>
                     <div className="w-px h-8 bg-white/10"></div>
-                    <div className="flex flex-col items-center lg:items-start">
-                        <span className="text-white text-2xl font-bold">4k</span>
+                    <div className="flex flex-col items-center lg:items-start group cursor-default">
+                        <span className="text-white text-2xl font-bold group-hover:text-xand-400 transition-colors">4k</span>
                         <span className="uppercase tracking-wider text-xs">TPS</span>
                     </div>
                 </div>
@@ -170,7 +169,7 @@ export const Home: React.FC = () => {
                     {/* Main Image Card */}
                     <div className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl z-20 bg-slate-900 animate-floating ring-1 ring-white/10">
                         <img 
-                            src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=2832&auto=format&fit=crop" 
+                            src="https://images.unsplash.com/photo-1639322537228-ad7117a767f1?q=80&w=1000&auto=format&fit=crop" 
                             alt="Futuristic Blockchain Node" 
                             className="w-full h-auto object-cover opacity-90 scale-105 group-hover:scale-110 transition-transform duration-[2000ms]"
                         />
@@ -178,6 +177,7 @@ export const Home: React.FC = () => {
                         {/* Overlay Gradient/Scanline */}
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/20"></div>
                         <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none opacity-20"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 mix-blend-overlay"></div>
 
                         {/* Floating UI Elements on top of image */}
                         <div className="absolute top-4 right-4 z-20">
