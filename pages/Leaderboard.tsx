@@ -15,6 +15,7 @@ export const Leaderboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [sortField, setSortField] = useState<'score' | 'uptime_percentage' | 'stake_weight' | 'latency_ms'>('score');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [filter, setFilter] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,8 +45,18 @@ export const Leaderboard: React.FC = () => {
     }
   };
 
+  const filteredNodes = useMemo(() => {
+    if (!filter) return nodes;
+    const lowerFilter = filter.toLowerCase();
+    return nodes.filter(n => 
+        (n.name?.toLowerCase().includes(lowerFilter)) ||
+        (n.id.toLowerCase().includes(lowerFilter)) ||
+        (n.ip.toLowerCase().includes(lowerFilter))
+    );
+  }, [nodes, filter]);
+
   const sortedNodes = useMemo(() => {
-    return [...nodes].sort((a, b) => {
+    return [...filteredNodes].sort((a, b) => {
         let valA, valB;
         if (sortField === 'score') {
             valA = a.gradeInfo.score;
@@ -59,11 +70,10 @@ export const Leaderboard: React.FC = () => {
         if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
         return 0;
     });
-  }, [nodes, sortField, sortDirection]);
+  }, [filteredNodes, sortField, sortDirection]);
 
-  // Top 3 for Podium
+  // Top 3 for Podium (Always based on global list, unaffected by search filter for stability)
   const top3 = useMemo(() => {
-    // Always calculate top 3 by Score for the podium, regardless of table sort
     return [...nodes].sort((a, b) => b.gradeInfo.score - a.gradeInfo.score).slice(0, 3);
   }, [nodes]);
 
@@ -103,8 +113,8 @@ export const Leaderboard: React.FC = () => {
             <p className="text-slate-500 mt-2 text-sm md:text-base">Recognizing top performing nodes across the Xandeum Network.</p>
         </div>
 
-        {/* Podium Section */}
-        {top3.length === 3 && (
+        {/* Podium Section - Only show when not filtering to avoid confusion */}
+        {!filter && top3.length === 3 && (
             <div className="flex flex-col md:grid md:grid-cols-3 gap-6 items-end mb-12 px-2 sm:px-4 md:px-12 relative">
                 {/* 1st Place (Mobile: First) */}
                 <div className="order-1 md:order-2 flex flex-col items-center z-10 w-full mb-6 md:mb-0">
@@ -167,6 +177,7 @@ export const Leaderboard: React.FC = () => {
         )}
 
         {/* Quick Lists Row - Optimized for Tablet/Mobile */}
+        {!filter && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className="text-xs font-bold text-slate-500 uppercase mb-3 flex items-center gap-2">
@@ -217,12 +228,29 @@ export const Leaderboard: React.FC = () => {
                 </ul>
             </div>
         </div>
+        )}
 
         {/* Full Ranking Table Container */}
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
-            <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                 <h2 className="text-lg font-bold text-slate-800">Global Rankings</h2>
-                 <span className="text-xs text-slate-500 italic">Showing top 100 nodes</span>
+            <div className="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                 <div className="flex flex-col">
+                     <h2 className="text-lg font-bold text-slate-800">Global Rankings</h2>
+                     <span className="text-xs text-slate-500 italic">Showing {sortedNodes.length} nodes</span>
+                 </div>
+                 
+                 {/* Search Bar */}
+                 <div className="relative w-full sm:w-64">
+                    <input 
+                      type="text" 
+                      placeholder="Search Validator, ID or IP..." 
+                      value={filter}
+                      onChange={(e) => setFilter(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-sm rounded-lg pl-10 pr-4 py-2 focus:ring-1 focus:ring-xand-500 focus:border-xand-500 outline-none transition-all placeholder-slate-400"
+                    />
+                    <span className="absolute left-3 top-2.5 text-slate-400 text-xs">
+                        {ICONS.Search}
+                    </span>
+                 </div>
             </div>
             
             {/* Desktop Table View */}
@@ -265,7 +293,13 @@ export const Leaderboard: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {sortedNodes.slice(0, 100).map((node, index) => (
+                        {sortedNodes.length === 0 ? (
+                            <tr>
+                                <td colSpan={8} className="px-6 py-12 text-center text-slate-500">
+                                    No validators found matching "{filter}"
+                                </td>
+                            </tr>
+                        ) : sortedNodes.slice(0, 100).map((node, index) => (
                             <tr key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer group">
                                 <td className="px-4 sm:px-6 py-4 font-mono text-slate-400 text-sm">#{index + 1}</td>
                                 <td className="px-4 sm:px-6 py-4">
@@ -323,7 +357,11 @@ export const Leaderboard: React.FC = () => {
 
             {/* Mobile Card View */}
             <div className="md:hidden divide-y divide-slate-100">
-                {sortedNodes.slice(0, 100).map((node, index) => (
+                {sortedNodes.length === 0 ? (
+                    <div className="p-8 text-center text-slate-500">
+                        No validators found matching "{filter}"
+                    </div>
+                ) : sortedNodes.slice(0, 100).map((node, index) => (
                     <div key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="p-4 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors">
                         <div className="flex items-center justify-between mb-3">
                             <div className="flex items-center gap-3">
