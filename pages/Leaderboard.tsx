@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pNodeService } from '../services/pNodeService';
@@ -299,58 +298,70 @@ export const Leaderboard: React.FC = () => {
                                     No validators found matching "{filter}"
                                 </td>
                             </tr>
-                        ) : sortedNodes.slice(0, 100).map((node, index) => (
-                            <tr key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="hover:bg-slate-50 transition-colors cursor-pointer group">
-                                <td className="px-4 sm:px-6 py-4 font-mono text-slate-400 text-sm">#{index + 1}</td>
-                                <td className="px-4 sm:px-6 py-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 border border-slate-200">
-                                            {node.name?.substring(0, 2).toUpperCase()}
+                        ) : sortedNodes.slice(0, 100).map((node, index) => {
+                            const isTopTen = index < 10;
+                            return (
+                                <tr key={node.id} onClick={() => navigate(`/node/${node.id}`)} 
+                                    className={`hover:bg-slate-50 transition-colors cursor-pointer group ${isTopTen ? 'bg-xand-50/40 relative' : ''}`}>
+                                    <td className="px-4 sm:px-6 py-4 font-mono text-slate-400 text-sm">
+                                        <div className="flex items-center gap-2">
+                                            #{index + 1}
+                                            {isTopTen && <i className="fas fa-star text-amber-400 text-[10px]"></i>}
                                         </div>
-                                        <div className="font-semibold text-slate-800 text-sm group-hover:text-xand-600 transition-colors">{node.name}</div>
-                                    </div>
-                                </td>
-                                <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
-                                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                                        <i className="fas fa-globe text-slate-400"></i> {node.region}
-                                    </div>
-                                </td>
-                                <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
-                                     <span className="font-mono text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-100">
-                                        {node.ip}
-                                     </span>
-                                </td>
-                                <td className="px-4 sm:px-6 py-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className={`text-lg font-bold ${
-                                            node.gradeInfo.score >= 90 ? 'text-green-600' : 
-                                            node.gradeInfo.score >= 80 ? 'text-blue-600' : 'text-slate-600'
-                                        }`}>
-                                            {node.gradeInfo.score}
-                                        </span>
-                                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
-                                             node.gradeInfo.grade.startsWith('A') ? 'bg-green-50 text-green-600 border-green-200' :
-                                             node.gradeInfo.grade.startsWith('B') ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                             'bg-yellow-50 text-yellow-600 border-yellow-200'
-                                        }`}>
-                                            {node.gradeInfo.grade}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td className="px-4 sm:px-6 py-4">
-                                    <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden mb-1">
-                                        <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
-                                    </div>
-                                    <span className="text-xs text-slate-600 font-medium">{node.uptime_percentage.toFixed(2)}%</span>
-                                </td>
-                                <td className="px-4 sm:px-6 py-4 font-mono text-sm text-slate-600">
-                                    {node.stake_weight.toLocaleString()}
-                                </td>
-                                <td className="px-4 sm:px-6 py-4 text-right font-mono text-sm text-slate-600">
-                                    {node.latency_ms}ms
-                                </td>
-                            </tr>
-                        ))}
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${isTopTen ? 'bg-white text-xand-600 border-xand-200 shadow-sm' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+                                                {node.name?.substring(0, 2).toUpperCase()}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="font-semibold text-slate-800 text-sm group-hover:text-xand-600 transition-colors">{node.name}</div>
+                                                {isTopTen && <span className="text-[10px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">TOP 10</span>}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
+                                        <div className="flex items-center gap-2 text-sm text-slate-600">
+                                            <i className="fas fa-globe text-slate-400"></i> {node.region}
+                                        </div>
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4 hidden md:table-cell">
+                                         <span className="font-mono text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-100">
+                                            {node.ip}
+                                         </span>
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className={`text-lg font-bold ${
+                                                node.gradeInfo.score >= 90 ? 'text-green-600' : 
+                                                node.gradeInfo.score >= 80 ? 'text-blue-600' : 'text-slate-600'
+                                            }`}>
+                                                {node.gradeInfo.score}
+                                            </span>
+                                            <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                                 node.gradeInfo.grade.startsWith('A') ? 'bg-green-50 text-green-600 border-green-200' :
+                                                 node.gradeInfo.grade.startsWith('B') ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                 'bg-yellow-50 text-yellow-600 border-yellow-200'
+                                            }`}>
+                                                {node.gradeInfo.grade}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4">
+                                        <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden mb-1">
+                                            <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
+                                        </div>
+                                        <span className="text-xs text-slate-600 font-medium">{node.uptime_percentage.toFixed(2)}%</span>
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4 font-mono text-sm text-slate-600">
+                                        {node.stake_weight.toLocaleString()}
+                                    </td>
+                                    <td className="px-4 sm:px-6 py-4 text-right font-mono text-sm text-slate-600">
+                                        {node.latency_ms}ms
+                                    </td>
+                                </tr>
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
@@ -361,67 +372,74 @@ export const Leaderboard: React.FC = () => {
                     <div className="p-8 text-center text-slate-500">
                         No validators found matching "{filter}"
                     </div>
-                ) : sortedNodes.slice(0, 100).map((node, index) => (
-                    <div key={node.id} onClick={() => navigate(`/node/${node.id}`)} className="p-4 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors">
-                        <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center gap-3">
-                                <span className="font-mono text-slate-400 text-sm w-6">#{index + 1}</span>
-                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 border border-slate-200">
-                                    {node.name?.substring(0, 2).toUpperCase()}
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="font-semibold text-slate-800 text-sm truncate">{node.name}</div>
-                                    <div className="text-xs text-slate-500 mt-0.5 flex flex-wrap items-center gap-x-2">
-                                        <span className="flex items-center gap-1 text-slate-500">
-                                            <i className="fas fa-globe text-slate-300 text-[10px]"></i>
-                                            {node.region}
-                                        </span>
-                                        <span className="w-1 h-1 rounded-full bg-slate-300"></span>
-                                        <span className="font-mono text-slate-600 bg-slate-50 px-1.5 rounded border border-slate-100 text-[10px] sm:text-xs">{node.ip}</span>
+                ) : sortedNodes.slice(0, 100).map((node, index) => {
+                    const isTopTen = index < 10;
+                    return (
+                        <div key={node.id} onClick={() => navigate(`/node/${node.id}`)} 
+                            className={`p-4 hover:bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors ${isTopTen ? 'bg-xand-50/40 border-l-4 border-l-xand-500' : ''}`}>
+                            <div className="flex items-center justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                    <span className={`font-mono text-sm w-6 ${isTopTen ? 'text-xand-600 font-bold' : 'text-slate-400'}`}>#{index + 1}</span>
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border ${isTopTen ? 'bg-white text-xand-600 border-xand-200' : 'bg-slate-100 text-slate-500 border-slate-200'}`}>
+                                        {node.name?.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2">
+                                            <div className="font-semibold text-slate-800 text-sm truncate">{node.name}</div>
+                                            {isTopTen && <i className="fas fa-star text-amber-400 text-[10px]"></i>}
+                                        </div>
+                                        <div className="text-xs text-slate-500 mt-0.5 flex flex-wrap items-center gap-x-2">
+                                            <span className="flex items-center gap-1 text-slate-500">
+                                                <i className="fas fa-globe text-slate-300 text-[10px]"></i>
+                                                {node.region}
+                                            </span>
+                                            <span className="w-1 h-1 rounded-full bg-slate-300"></span>
+                                            <span className="font-mono text-slate-600 bg-slate-50 px-1.5 rounded border border-slate-100 text-[10px] sm:text-xs">{node.ip}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-col items-end">
-                                <div className="flex items-center gap-1">
-                                    <span className={`text-lg font-bold ${
-                                        node.gradeInfo.score >= 90 ? 'text-green-600' : 
-                                        node.gradeInfo.score >= 80 ? 'text-blue-600' : 'text-slate-600'
-                                    }`}>
-                                        {node.gradeInfo.score}
-                                    </span>
-                                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
-                                            node.gradeInfo.grade.startsWith('A') ? 'bg-green-50 text-green-600 border-green-200' :
-                                            node.gradeInfo.grade.startsWith('B') ? 'bg-blue-50 text-blue-600 border-blue-200' :
-                                            'bg-yellow-50 text-yellow-600 border-yellow-200'
-                                    }`}>
-                                        {node.gradeInfo.grade}
-                                    </span>
+                                <div className="flex flex-col items-end">
+                                    <div className="flex items-center gap-1">
+                                        <span className={`text-lg font-bold ${
+                                            node.gradeInfo.score >= 90 ? 'text-green-600' : 
+                                            node.gradeInfo.score >= 80 ? 'text-blue-600' : 'text-slate-600'
+                                        }`}>
+                                            {node.gradeInfo.score}
+                                        </span>
+                                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold border ${
+                                                node.gradeInfo.grade.startsWith('A') ? 'bg-green-50 text-green-600 border-green-200' :
+                                                node.gradeInfo.grade.startsWith('B') ? 'bg-blue-50 text-blue-600 border-blue-200' :
+                                                'bg-yellow-50 text-yellow-600 border-yellow-200'
+                                        }`}>
+                                            {node.gradeInfo.grade}
+                                        </span>
+                                    </div>
+                                    <span className="text-[10px] text-slate-400 uppercase">Score</span>
                                 </div>
-                                <span className="text-[10px] text-slate-400 uppercase">Score</span>
                             </div>
-                        </div>
 
-                        <div className="grid grid-cols-2 gap-2 text-xs">
-                             <div className="bg-slate-50 p-2 rounded border border-slate-100 col-span-2">
-                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Uptime Performance</span>
-                                <div className="flex items-center gap-2">
-                                     <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                                        <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
-                                     </div>
-                                     <span className="font-bold text-slate-700">{node.uptime_percentage.toFixed(1)}%</span>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                <div className="bg-slate-50 p-2 rounded border border-slate-100 col-span-2">
+                                    <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Uptime Performance</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                            <div className="h-full bg-green-500" style={{width: `${node.uptime_percentage}%`}}></div>
+                                        </div>
+                                        <span className="font-bold text-slate-700">{node.uptime_percentage.toFixed(1)}%</span>
+                                    </div>
                                 </div>
-                             </div>
-                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Stake</span>
-                                <span className="font-mono font-bold text-slate-700">{node.stake_weight.toLocaleString()}</span>
-                             </div>
-                             <div className="bg-slate-50 p-2 rounded border border-slate-100">
-                                <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Latency</span>
-                                <span className="font-mono font-bold text-slate-700">{node.latency_ms}ms</span>
-                             </div>
+                                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                    <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Stake</span>
+                                    <span className="font-mono font-bold text-slate-700">{node.stake_weight.toLocaleString()}</span>
+                                </div>
+                                <div className="bg-slate-50 p-2 rounded border border-slate-100">
+                                    <span className="text-slate-400 block mb-0.5 text-[10px] uppercase">Latency</span>
+                                    <span className="font-mono font-bold text-slate-700">{node.latency_ms}ms</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     </div>
